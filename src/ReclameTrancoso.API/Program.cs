@@ -1,5 +1,6 @@
 using Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using ReclameTrancoso.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseNpgsql(connectionString));
+
+builder.Services.ConfigureService(builder.Configuration);
+builder.Services.ConfigureUseCasesHandlers();
+builder.Services.ConfigureValidators();
+
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
