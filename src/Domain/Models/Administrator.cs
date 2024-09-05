@@ -1,6 +1,6 @@
 ﻿namespace Domain.Models;
 
-public class Administrator
+public class Administrator : BaseEntity
 {
     
 }
