@@ -26,7 +26,8 @@ public static class DependencyInjectionRegister
     {
         services.AddScoped<IUseCaseHandlerFactory, UseCaseHandlerFactory>();
         
-        services.AddScoped<IUseCaseHandler<ResidentRegisterRequestDTO, ResidentRegisterResponseDTO>, RegisterResidentUserCase>();
+        services.AddScoped<IUseCaseHandler<ResidentRegisterRequestDTO, ResidentRegisterResponseDTO>,
+            RegisterResidentUserCase>();
         return services;
     }
 
