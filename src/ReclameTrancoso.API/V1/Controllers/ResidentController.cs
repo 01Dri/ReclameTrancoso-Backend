@@ -12,8 +12,6 @@ namespace API.V1.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 public class ResidentController : ControllerBase
 {
-
-    
     private readonly IUseCaseHandlerFactory _handlerFactory;
 
     public ResidentController(IUseCaseHandlerFactory handlerFactory)

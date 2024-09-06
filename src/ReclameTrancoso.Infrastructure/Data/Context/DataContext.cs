@@ -50,8 +50,8 @@ public class DataContext : DbContext
         modelBuilder.Entity<User>()
             .HasOne<Resident>(u => u.Resident)
             .WithOne(r => r.User)
-            .HasForeignKey<Resident>( r => r.UserId);
-
+            .HasForeignKey<User>( r => r.ResidentId);
+        
 
         modelBuilder.Entity<ApartmentResident>()
             .HasOne<Resident>(ap => ap.Resident)

@@ -19,6 +19,10 @@ public static class DependencyInjectionRegister
         services.AddScoped<IApartmentRepository, ApartmentRepository>();
         services.AddScoped<IBuildingRepository, BuildingRepository>();
         services.AddScoped<IResidentRepository, ResidentRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IApartmentsResidentsRepository, ApartmentsResidentsRepository>();
+        services.AddScoped<IBuildingResidentsRepository, BuildingsResidentsRepository>();
+
 
         return services;
     }

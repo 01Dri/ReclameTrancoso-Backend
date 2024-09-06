@@ -129,9 +129,6 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
                     b.ToTable("Residents");
                 });
 
@@ -151,10 +148,13 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("ResidentId")
+                    b.Property<long?>("ResidentId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ResidentId")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -208,15 +208,13 @@ namespace Infrastructure.Migrations
                     b.Navigation("Resident");
                 });
 
-            modelBuilder.Entity("Domain.Models.Resident", b =>
+            modelBuilder.Entity("Domain.Models.User", b =>
                 {
-                    b.HasOne("Domain.Models.User", "User")
-                        .WithOne("Resident")
-                        .HasForeignKey("Domain.Models.Resident", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Domain.Models.Resident", "Resident")
+                        .WithOne("User")
+                        .HasForeignKey("Domain.Models.User", "ResidentId");
 
-                    b.Navigation("User");
+                    b.Navigation("Resident");
                 });
 
             modelBuilder.Entity("Domain.Models.Apartment", b =>
@@ -236,12 +234,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("ApartmentResidents");
 
                     b.Navigation("BuildingResidents");
-                });
 
-            modelBuilder.Entity("Domain.Models.User", b =>
-                {
-                    b.Navigation("Resident")
-                        .IsRequired();
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
