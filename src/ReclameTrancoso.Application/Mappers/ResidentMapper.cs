@@ -19,4 +19,17 @@ public static class ResidentMapper
             }
         };
     }
+    
+    public static ResidentRegisterResponseDTO ToRegisterUseCaseResult(this Resident entity)
+    {
+        return new()
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Email = entity.Email,
+            ApartmentsIds = entity.ApartmentResidents?.Select(x => x.ApartmentId).ToList()?? [],
+            BuildingsIds = entity.BuildingResidents?.Select(x => x.BuildingId).ToList() ?? [],
+            UserId = entity.UserId
+        };
+    }
 }

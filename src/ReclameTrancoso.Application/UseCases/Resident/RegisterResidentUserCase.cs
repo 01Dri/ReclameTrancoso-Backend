@@ -39,10 +39,10 @@ namespace Application.UseCases.Resident
 
         public async Task<ResidentRegisterResponseDTO> Handle(ResidentRegisterRequestDTO request, CancellationToken cancellationToken)
         {
+            await this._validator.ValidateAndThrowAsync(request, cancellationToken);
             _unitOfWork.Begin();
             try
             {
-                await this._validator.ValidateAndThrowAsync(request, cancellationToken);
                 var resident = request.ToEntity();
                 var user = resident.User;
                 var building = await _buildingRepository.GetByIdAsync(request.BuildingId);
@@ -50,7 +50,7 @@ namespace Application.UseCases.Resident
                 await SaveResidentAndUser(resident, user);
                 await SaveBuildingResidentsAndApartmentResidents(apartment, building, resident);
                 _unitOfWork.Commit();
-                return new ResidentRegisterResponseDTO();
+                return resident.ToRegisterUseCaseResult();
             }
             catch
             {
@@ -65,6 +65,8 @@ namespace Application.UseCases.Resident
             user.ResidentId = resident.Id;
             user.Password = await this._passwordEncoder.HashPasswordAsync(user.Password);
             await _userRepository.SaveAsync(user);
+            resident.UserId = user.Id;
+
         }
 
         private async Task SaveBuildingResidentsAndApartmentResidents(Apartment apartment, Building building, Domain.Models.Resident resident)
