@@ -4,6 +4,8 @@ using Domain.Models;
 using Domain.Models.DTOs.Resident;
 using FluentValidation;
 using ReclameTrancoso.Domain.Interfaces.PasswordEncoder;
+using ReclameTrancoso.Domain.Interfaces.Transactions;
+using ReclameTrancoso.Exceptions.Exceptions;
 
 namespace Application.UseCases.Resident
 {
@@ -19,8 +21,9 @@ namespace Application.UseCases.Resident
         private readonly IApartmentsResidentsRepository _apartmentsResidentsRepository;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordEncoder _passwordEncoder;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public RegisterResidentUserCase(IValidator<ResidentRegisterRequestDTO> validator, IResidentRepository residentRepository, IBuildingRepository buildingRepository, IApartmentRepository apartmentRepository, IBuildingResidentsRepository buildingResidentsRepository, IApartmentsResidentsRepository apartmentsResidentsRepository, IUserRepository userRepository, IPasswordEncoder passwordEncoder)
+        public RegisterResidentUserCase(IValidator<ResidentRegisterRequestDTO> validator, IResidentRepository residentRepository, IBuildingRepository buildingRepository, IApartmentRepository apartmentRepository, IBuildingResidentsRepository buildingResidentsRepository, IApartmentsResidentsRepository apartmentsResidentsRepository, IUserRepository userRepository, IPasswordEncoder passwordEncoder, IUnitOfWork unitOfWork)
         {
             _validator = validator;
             _residentRepository = residentRepository;
@@ -30,20 +33,30 @@ namespace Application.UseCases.Resident
             _apartmentsResidentsRepository = apartmentsResidentsRepository;
             _userRepository = userRepository;
             _passwordEncoder = passwordEncoder;
+            _unitOfWork = unitOfWork;
         }
 
 
         public async Task<ResidentRegisterResponseDTO> Handle(ResidentRegisterRequestDTO request, CancellationToken cancellationToken)
         {
-            await this._validator.ValidateAndThrowAsync(request);
-            var resident = request.ToEntity();
-            var user = resident.User;
-            var building = await _buildingRepository.GetByIdAsync(request.BuildingId);
-            var apartment = await _apartmentRepository.GetByIdAsync(request.ApartmentId);
-            await SaveResidentAndUser(resident, user);
-            await SaveBuildingResidentsAndApartmentResidents(apartment, building, resident);
-            await _validator.ValidateAndThrowAsync(request, cancellationToken);
-            return new ResidentRegisterResponseDTO();
+            _unitOfWork.Begin();
+            try
+            {
+                await this._validator.ValidateAndThrowAsync(request, cancellationToken);
+                var resident = request.ToEntity();
+                var user = resident.User;
+                var building = await _buildingRepository.GetByIdAsync(request.BuildingId);
+                var apartment = await _apartmentRepository.GetByIdAsync(request.ApartmentId);
+                await SaveResidentAndUser(resident, user);
+                await SaveBuildingResidentsAndApartmentResidents(apartment, building, resident);
+                _unitOfWork.Commit();
+                return new ResidentRegisterResponseDTO();
+            }
+            catch
+            {
+                _unitOfWork.Rollback();
+                throw new FailedToSaveEntityException("Failed to save resident");
+            }
         }
 
         private async Task SaveResidentAndUser(Domain.Models.Resident resident, User user)

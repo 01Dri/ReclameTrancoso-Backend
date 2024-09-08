@@ -9,7 +9,7 @@ public class ResidentRegisterRequestDTO : IUseCaseRequest
     public string Email { get; set; } = string.Empty;
     public string Cpf { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
-    public long BuildingId { get; set; }
-    public long ApartmentId { get; set; }
+    public long? BuildingId { get; set; }
+    public long? ApartmentId { get; set; }
 
 }

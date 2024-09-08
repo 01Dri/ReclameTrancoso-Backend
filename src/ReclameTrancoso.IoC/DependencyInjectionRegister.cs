@@ -5,10 +5,12 @@ using Domain.Interfaces;
 using Domain.Models.DTOs.Resident;
 using FluentValidation;
 using Infrastructure.Data.Repositories;
+using Infrastructure.Data.UnitOfWork;
 using Infrastructure.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ReclameTrancoso.Domain.Interfaces.PasswordEncoder;
+using ReclameTrancoso.Domain.Interfaces.Transactions;
 
 namespace ReclameTrancoso.IoC;
 
@@ -25,7 +27,7 @@ public static class DependencyInjectionRegister
         services.AddScoped<IApartmentsResidentsRepository, ApartmentsResidentsRepository>();
         services.AddScoped<IBuildingResidentsRepository, BuildingsResidentsRepository>();
         services.AddScoped<IPasswordEncoder, BCryptPasswordEncoder>();
-
+        services.AddScoped<IUnitOfWork, UnitOfWorkEF>();
 
         return services;
     }
