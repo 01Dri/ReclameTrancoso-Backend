@@ -1,7 +1,12 @@
 ﻿using Application.Factory;
+using Application.Services;
+using Application.UseCases.Auth;
 using Application.UseCases.Resident;
+using Application.Validations.Auth;
 using Application.Validations.Resident;
 using Domain.Interfaces;
+using Domain.Models;
+using Domain.Models.DTOs.Auth;
 using Domain.Models.DTOs.Resident;
 using FluentValidation;
 using Infrastructure.Data.Repositories;
@@ -9,6 +14,7 @@ using Infrastructure.Data.UnitOfWork;
 using Infrastructure.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ReclameTrancoso.Domain.Interfaces.Auth;
 using ReclameTrancoso.Domain.Interfaces.PasswordEncoder;
 using ReclameTrancoso.Domain.Interfaces.Transactions;
 
@@ -26,8 +32,11 @@ public static class DependencyInjectionRegister
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IApartmentsResidentsRepository, ApartmentsResidentsRepository>();
         services.AddScoped<IBuildingResidentsRepository, BuildingsResidentsRepository>();
+        services.AddScoped<ITokenRepository, TokenRepository>();
         services.AddScoped<IPasswordEncoder, BCryptPasswordEncoder>();
         services.AddScoped<IUnitOfWork, UnitOfWorkEF>();
+        services.AddScoped<ITokenService<User, TokenResponseDTO>, JWTService>();
+        
 
         return services;
     }
@@ -37,6 +46,9 @@ public static class DependencyInjectionRegister
         
         services.AddScoped<IUseCaseHandler<ResidentRegisterRequestDTO, ResidentRegisterResponseDTO>,
             RegisterResidentUserCase>();
+        
+        services.AddScoped<IUseCaseHandler<LoginRequestDTO, TokenResponseDTO>,
+            LoginUseCase>();
         return services;
     }
 
@@ -44,6 +56,8 @@ public static class DependencyInjectionRegister
     public static IServiceCollection ConfigureValidators(this IServiceCollection services)
     {
         services.AddScoped<IValidator<ResidentRegisterRequestDTO>, RegisterResidentRequestValidation>();
+        services.AddScoped<IValidator<LoginRequestDTO>, LoginRequestValidation>();
+
         return services;
     }
     

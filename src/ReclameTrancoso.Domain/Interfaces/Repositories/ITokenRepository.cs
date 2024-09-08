@@ -1,6 +1,8 @@
+using Domain.Models;
+
 namespace Domain.Interfaces;
 
-public interface ITokenRepository
+public interface ITokenRepository : IRepositoryBase<TokenEntity>
 {
     
 }

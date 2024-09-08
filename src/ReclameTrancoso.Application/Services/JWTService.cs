@@ -9,11 +9,11 @@ using ReclameTrancoso.Domain.Interfaces.Auth;
 
 namespace Application.Services;
 
-public class JWTTokenResponseService : ITokenService<User, TokenResponseDTO>
+public class JWTService : ITokenService<User, TokenResponseDTO>
 {
     private readonly IConfiguration _configuration;
 
-    public JWTTokenResponseService(IConfiguration configuration)
+    public JWTService(IConfiguration configuration)
     {
         _configuration = configuration;
     }

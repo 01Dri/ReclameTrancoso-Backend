@@ -27,9 +27,10 @@ public static class ResidentMapper
             Id = entity.Id,
             Name = entity.Name,
             Email = entity.Email,
+            CPF = entity.Cpf,
             ApartmentsIds = entity.ApartmentResidents?.Select(x => x.ApartmentId).ToList()?? [],
             BuildingsIds = entity.BuildingResidents?.Select(x => x.BuildingId).ToList() ?? [],
-            UserId = entity.UserId
+            UserId = entity.User?.Id
         };
     }
 }

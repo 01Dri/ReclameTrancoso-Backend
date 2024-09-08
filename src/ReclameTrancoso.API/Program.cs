@@ -1,4 +1,5 @@
 using System.Text;
+using API.Middlwares;
 using Infrastructure.Data.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -52,8 +53,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseMiddleware<ValidationExceptionMiddleware>();
-app.UseAuthorization();
+app.UseMiddleware<ExceptionsMiddleware>();
+
 app.UseAuthentication();
+app.UseAuthorization();
+
+
 app.MapControllers();
+app.UseCors(x => x
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 
 app.Run();

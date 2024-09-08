@@ -35,12 +35,12 @@ public class RegisterResidentRequestValidation : AbstractValidator<ResidentRegis
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email não pode ser vazio.")
             .EmailAddress().WithMessage("Email deve ser válido.")
-            .MustAsync(async (email, _) => !await this._residentRepository.AnyByEmail(email))
+            .MustAsync(async (email, _) => !await this._residentRepository.AnyByEmailAsync(email))
             .WithMessage("Email já cadastrado");
 
         RuleFor(x => x.Cpf)
             .Length(14).WithMessage("CPF deve ter 14 caracteres, Ex: 868.115.090-15")
-            .MustAsync(async (cpf, _) => !await this._residentRepository.AnyByCPF(cpf))
+            .MustAsync(async (cpf, _) => !await this._residentRepository.AnyByCPFAsync(cpf))
             .WithMessage("CPF já cadastrado")
             .Must(cpf => Cpf.IsValid(cpf)).WithMessage("CPF inválido");
 
@@ -60,7 +60,7 @@ public class RegisterResidentRequestValidation : AbstractValidator<ResidentRegis
         
         RuleFor(x => x.ApartmentId)
             .NotNull().WithMessage("ID do apartamento é obrigatório")
-            .MustAsync(async (id, _) => !await this._apartmentsResidentsRepository.AlreadyExistOwnerApartment(id))
+            .MustAsync(async (id, _) => !await this._apartmentsResidentsRepository.AlreadyExistOwnerApartmentAsync(id))
             .WithMessage("Apartamento já tem um proprietário");
         
         

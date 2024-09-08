@@ -4,5 +4,5 @@ namespace Domain.Interfaces;
 
 public interface IApartmentsResidentsRepository : IRepositoryBase<ApartmentResident>
 {
-    Task<bool> AlreadyExistOwnerApartment(long? apartmentId);
+    Task<bool> AlreadyExistOwnerApartmentAsync(long? apartmentId);
 }

@@ -1,6 +1,10 @@
+using Domain.Models.DTOs.Auth;
+
 namespace ReclameTrancoso.Domain.Interfaces.Auth;
 
-public class ITokenService
+public interface ITokenService<T, TK>
 {
+    TK GenerateToken(T entity);
     
+
 }

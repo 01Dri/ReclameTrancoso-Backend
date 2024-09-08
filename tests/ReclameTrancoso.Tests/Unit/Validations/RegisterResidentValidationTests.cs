@@ -48,12 +48,12 @@ public class RegisterResidentValidationTests
         _mockBuildingRepository.Setup(x => 
             x.ExistsByIdAsync(mockRegisterResidentDto.BuildingId)).ReturnsAsync(true);
         _mockApartmentsResidentsRepository.Setup(x =>
-            x.AlreadyExistOwnerApartment(mockRegisterResidentDto.ApartmentId)).ReturnsAsync(false);
+            x.AlreadyExistOwnerApartmentAsync(mockRegisterResidentDto.ApartmentId)).ReturnsAsync(false);
         
         _mockResidentRepository.Setup(x => 
-            x.AnyByCPF(It.IsAny<string>())).ReturnsAsync(false);
+            x.AnyByCPFAsync(It.IsAny<string>())).ReturnsAsync(false);
         _mockResidentRepository.Setup(x =>
-            x.AnyByEmail(It.IsAny<string>())).ReturnsAsync(false);
+            x.AnyByEmailAsync(It.IsAny<string>())).ReturnsAsync(false);
 
 
         
@@ -157,7 +157,7 @@ public class RegisterResidentValidationTests
             ApartmentId = 1
         };
 
-        _mockResidentRepository.Setup(x => x.AnyByCPF(mockRegisterResidentDto.Cpf))
+        _mockResidentRepository.Setup(x => x.AnyByCPFAsync(mockRegisterResidentDto.Cpf))
             .ReturnsAsync(true);
         
         var result = await _validator.TestValidateAsync(mockRegisterResidentDto);
@@ -273,7 +273,7 @@ public class RegisterResidentValidationTests
         };
 
         _mockApartmentsResidentsRepository.Setup(x =>
-            x.AlreadyExistOwnerApartment(mockRegisterResidentDto.ApartmentId)).ReturnsAsync(false);
+            x.AlreadyExistOwnerApartmentAsync(mockRegisterResidentDto.ApartmentId)).ReturnsAsync(false);
         
         var result = await _validator.TestValidateAsync(mockRegisterResidentDto);
         result.ShouldHaveValidationErrorFor(x => x.ApartmentId)
@@ -294,7 +294,7 @@ public class RegisterResidentValidationTests
         };
 
         _mockApartmentsResidentsRepository.Setup(x =>
-            x.AlreadyExistOwnerApartment(mockRegisterResidentDto.ApartmentId)).ReturnsAsync(true);
+            x.AlreadyExistOwnerApartmentAsync(mockRegisterResidentDto.ApartmentId)).ReturnsAsync(true);
         
         _mockApartmentRepository.Setup(x =>
             x.ExistsByIdAsync(mockRegisterResidentDto.BuildingId)).ReturnsAsync(true);

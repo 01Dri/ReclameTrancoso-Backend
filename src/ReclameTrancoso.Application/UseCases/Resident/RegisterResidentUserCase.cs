@@ -65,8 +65,6 @@ namespace Application.UseCases.Resident
             user.ResidentId = resident.Id;
             user.Password = await this._passwordEncoder.HashPasswordAsync(user.Password);
             await _userRepository.SaveAsync(user);
-            resident.UserId = user.Id;
-
         }
 
         private async Task SaveBuildingResidentsAndApartmentResidents(Apartment apartment, Building building, Domain.Models.Resident resident)
