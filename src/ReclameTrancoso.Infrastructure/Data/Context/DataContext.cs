@@ -11,7 +11,7 @@ public class DataContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<ApartmentResident> ApartmentResidents { get; set; }
     public DbSet<BuildingResident> BuildingResidents { get; set; }
-
+    public DbSet<TokenEntity> TokenEntities { get; set; }
 
     
     public DataContext(DbContextOptions options) : base(options)
@@ -22,7 +22,6 @@ public class DataContext : DbContext
     {
         modelBuilder.Entity<Apartment>()
             .HasKey(a => a.Id);
-        
         
         modelBuilder.Entity<Building>()
             .HasKey(a => a.Id);
@@ -39,6 +38,9 @@ public class DataContext : DbContext
         
         modelBuilder.Entity<BuildingResident>()
             .HasKey(a => a.Id);
+
+        modelBuilder.Entity<TokenEntity>()
+            .HasKey(t => t.Id);
         
         
         modelBuilder.Entity<Apartment>()
@@ -50,7 +52,8 @@ public class DataContext : DbContext
         modelBuilder.Entity<User>()
             .HasOne<Resident>(u => u.Resident)
             .WithOne(r => r.User)
-            .HasForeignKey<User>( r => r.ResidentId);
+            .HasForeignKey<User>( r => r.ResidentId)
+            .OnDelete(DeleteBehavior.Cascade);
         
 
         modelBuilder.Entity<ApartmentResident>()
@@ -73,6 +76,13 @@ public class DataContext : DbContext
             .HasOne<Building>(ap => ap.Building)
             .WithMany(r => r.BuildingResidents)
             .HasForeignKey(ar => ar.BuildingId);
+        
+
+        modelBuilder.Entity<TokenEntity>()
+            .HasOne(t => t.User)
+            .WithOne(u => u.Token)
+            .HasForeignKey<TokenEntity>(t => t.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
     
 }

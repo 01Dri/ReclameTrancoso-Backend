@@ -11,7 +11,7 @@ public class ApartmentsResidentsRepository : RepositoryBase<ApartmentResident>, 
     {
     }
 
-    public async Task<bool> AlreadyExistOwnerApartment(long? apartmentId)
+    public async Task<bool> AlreadyExistOwnerApartmentAsync(long? apartmentId)
     {
         return await this.DbSet.AnyAsync(x => x.ApartmentId == apartmentId);
     }

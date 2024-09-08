@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240908151604_v2")]
+    partial class v2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,6 +128,9 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.ToTable("Residents");
@@ -180,6 +186,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<long?>("ResidentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("TokenId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -243,8 +252,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Models.User", "User")
                         .WithOne("Token")
-                        .HasForeignKey("Domain.Models.TokenEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("Domain.Models.TokenEntity", "UserId");
 
                     b.Navigation("User");
                 });
@@ -253,8 +261,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Models.Resident", "Resident")
                         .WithOne("User")
-                        .HasForeignKey("Domain.Models.User", "ResidentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("Domain.Models.User", "ResidentId");
 
                     b.Navigation("Resident");
                 });

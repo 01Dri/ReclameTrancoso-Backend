@@ -1,5 +1,4 @@
 ﻿using Domain.Interfaces;
-using MediatR;
 
 namespace Domain.Models.DTOs.Resident;
 
