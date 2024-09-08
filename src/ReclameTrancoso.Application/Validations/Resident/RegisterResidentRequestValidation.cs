@@ -1,19 +1,25 @@
-﻿using System.Data;
-using Domain.Interfaces;
+﻿using Domain.Interfaces;
 using Domain.Models.DTOs.Resident;
 using FluentValidation;
 
 namespace Application.Validations.Resident;
 
-public class ResidentRegisterRequestValidation : AbstractValidator<ResidentRegisterRequestDTO>
+public class RegisterResidentRequestValidation : AbstractValidator<ResidentRegisterRequestDTO>
 {
     private readonly IBuildingRepository _buildingRepository;
     private readonly IApartmentRepository _apartmentRepository;
+    private readonly IResidentRepository _residentRepository;
 
-    public ResidentRegisterRequestValidation(IBuildingRepository buildingRepository, IApartmentRepository apartmentRepository)
+    public RegisterResidentRequestValidation
+    (
+        IBuildingRepository buildingRepository,
+        IApartmentRepository apartmentRepository,
+        IResidentRepository residentRepository
+    )
     {
         _apartmentRepository = apartmentRepository;
         _buildingRepository = buildingRepository;
+        _residentRepository = residentRepository;
         
         
         RuleFor(x => x.Name)
@@ -23,10 +29,14 @@ public class ResidentRegisterRequestValidation : AbstractValidator<ResidentRegis
 
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email não pode ser vazio.")
-            .EmailAddress().WithMessage("Email deve ser válido.");
+            .EmailAddress().WithMessage("Email deve ser válido.")
+            .MustAsync(async (email, _) => !await this._residentRepository.AnyByEmail(email))
+            .WithMessage("Email já cadastrado");
 
         RuleFor(x => x.Cpf)
-            .Length(14).WithMessage("CPF deve ter 14 caracteres, Ex: 130.482.459-44");
+            .Length(14).WithMessage("CPF deve ter 14 caracteres, Ex: 130.482.459-44")
+            .MustAsync(async (cpf, _) => !await this._residentRepository.AnyByCPF(cpf))
+            .WithMessage("CPF já cadastrado");
 
         RuleFor(x => x.Password)
             .MinimumLength(6).WithMessage("Senha deve ter no mínimo 6 caracteres")
@@ -39,6 +49,5 @@ public class ResidentRegisterRequestValidation : AbstractValidator<ResidentRegis
         RuleFor(x => x.ApartmentId)
             .MustAsync(async (x, _) => await this._apartmentRepository.ExistsByIdAsync(x))
             .WithMessage("Apartamento não existe");
-
     }
 }

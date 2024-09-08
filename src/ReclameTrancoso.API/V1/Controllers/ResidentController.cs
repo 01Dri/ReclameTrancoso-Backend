@@ -10,6 +10,7 @@ namespace API.V1.Controllers;
 [Route(RouteUtils.API_V1_ROUTE + "resident")]
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
+// [Authorize]
 public class ResidentController : ControllerBase
 {
     private readonly IUseCaseHandlerFactory _handlerFactory;
