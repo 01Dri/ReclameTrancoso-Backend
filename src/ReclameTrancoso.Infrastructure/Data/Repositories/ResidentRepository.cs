@@ -11,12 +11,12 @@ public class ResidentRepository : RepositoryBase<Resident>, IResidentRepository
     {
     }
 
-    public async Task<bool> AnyByEmail(string email)
+    public async Task<bool> AnyByEmailAsync(string email)
     {
         return await this.DbSet.AnyAsync(X => X.Email == email);
     }
     
-    public async Task<bool> AnyByCPF(string cpf)
+    public async Task<bool> AnyByCPFAsync(string cpf)
     {
         return await this.DbSet.AnyAsync(X => X.Cpf == cpf);
     }
