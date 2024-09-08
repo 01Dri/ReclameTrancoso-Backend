@@ -24,4 +24,13 @@ public class UserRepository: RepositoryBase<User>, IUserRepository
             .Where(x => x.Cpf == cpf)
             .FirstOrDefaultAsync();
     }
+
+    public async Task<User> GetByEmailAsync(string email)
+    {
+        return await this.DbSet
+            .Include(x => x.Token)
+            .Include(x => x.Resident)
+            .Where(x => x.Resident.Email == email)
+            .FirstOrDefaultAsync();
+    }
 }
