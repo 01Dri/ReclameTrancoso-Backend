@@ -12,6 +12,7 @@ public class RegisterResidentValidationTests
     private readonly Mock<IBuildingRepository> _mockBuildingRepository;
     private readonly Mock<IApartmentRepository> _mockApartmentRepository;
     private readonly Mock<IResidentRepository> _mockResidentRepository;
+    private readonly Mock<IApartmentsResidentsRepository> _mockApartmentsResidentsRepository;
     private readonly RegisterResidentRequestValidation _validator;
 
     public RegisterResidentValidationTests()
@@ -19,11 +20,14 @@ public class RegisterResidentValidationTests
         _mockBuildingRepository = new Mock<IBuildingRepository>();
         _mockApartmentRepository = new Mock<IApartmentRepository>();
         _mockResidentRepository = new Mock<IResidentRepository>();
+        _mockApartmentsResidentsRepository = new Mock<IApartmentsResidentsRepository>();
+
         _validator = new RegisterResidentRequestValidation
         (
             _mockBuildingRepository.Object,
             _mockApartmentRepository.Object,
-            _mockResidentRepository.Object
+            _mockResidentRepository.Object,
+            _mockApartmentsResidentsRepository.Object
         );
     }
 
@@ -43,7 +47,8 @@ public class RegisterResidentValidationTests
             x.ExistsByIdAsync(mockRegisterResidentDto.ApartmentId)).ReturnsAsync(true);
         _mockBuildingRepository.Setup(x => 
             x.ExistsByIdAsync(mockRegisterResidentDto.BuildingId)).ReturnsAsync(true);
-        
+        _mockApartmentsResidentsRepository.Setup(x =>
+            x.AlreadyExistOwnerApartment(mockRegisterResidentDto.ApartmentId)).ReturnsAsync(false);
         
         _mockResidentRepository.Setup(x => 
             x.AnyByCPF(It.IsAny<string>())).ReturnsAsync(false);
@@ -267,12 +272,36 @@ public class RegisterResidentValidationTests
             ApartmentId = 1
         };
 
-        _mockBuildingRepository.Setup(x =>
-            x.ExistsByIdAsync(mockRegisterResidentDto.BuildingId)).ReturnsAsync(false);
+        _mockApartmentsResidentsRepository.Setup(x =>
+            x.AlreadyExistOwnerApartment(mockRegisterResidentDto.ApartmentId)).ReturnsAsync(false);
         
         var result = await _validator.TestValidateAsync(mockRegisterResidentDto);
         result.ShouldHaveValidationErrorFor(x => x.ApartmentId)
             .WithErrorMessage("Apartamento não existe");
+    }
+    
+    [Fact]
+    public async Task Test_ApartmentID_ShouldReturn_AlreadyOwnerApartmentMessageError()
+    {
+        var mockRegisterResidentDto = new ResidentRegisterRequestDTO()
+        {
+            Name = "Diego Henrique Magahaes",
+            Email = "diegohenrique@gmail.com",
+            Cpf = "868.115.090-15",
+            Password = "carro123",
+            BuildingId = 1,
+            ApartmentId = 1
+        };
+
+        _mockApartmentsResidentsRepository.Setup(x =>
+            x.AlreadyExistOwnerApartment(mockRegisterResidentDto.ApartmentId)).ReturnsAsync(true);
+        
+        _mockApartmentRepository.Setup(x =>
+            x.ExistsByIdAsync(mockRegisterResidentDto.BuildingId)).ReturnsAsync(true);
+        
+        var result = await _validator.TestValidateAsync(mockRegisterResidentDto);
+        result.ShouldHaveValidationErrorFor(x => x.ApartmentId)
+            .WithErrorMessage("Apartamento já tem um proprietário");
     }
    
 }

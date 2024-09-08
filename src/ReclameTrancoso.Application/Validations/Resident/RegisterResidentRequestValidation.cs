@@ -10,17 +10,21 @@ public class RegisterResidentRequestValidation : AbstractValidator<ResidentRegis
     private readonly IBuildingRepository _buildingRepository;
     private readonly IApartmentRepository _apartmentRepository;
     private readonly IResidentRepository _residentRepository;
+    private readonly IApartmentsResidentsRepository _apartmentsResidentsRepository;
 
     public RegisterResidentRequestValidation
     (
         IBuildingRepository buildingRepository,
         IApartmentRepository apartmentRepository,
-        IResidentRepository residentRepository
+        IResidentRepository residentRepository,
+        IApartmentsResidentsRepository apartmentsResidentsRepository
     )
     {
         _apartmentRepository = apartmentRepository;
         _buildingRepository = buildingRepository;
         _residentRepository = residentRepository;
+        _apartmentsResidentsRepository = apartmentsResidentsRepository;
+        
         
         
         RuleFor(x => x.Name)
@@ -53,5 +57,12 @@ public class RegisterResidentRequestValidation : AbstractValidator<ResidentRegis
             .NotNull().WithMessage("ID do apartamento é obrigatório")
             .MustAsync(async (id, _) => await this._apartmentRepository.ExistsByIdAsync(id))
             .WithMessage("Apartamento não existe");
+        
+        RuleFor(x => x.ApartmentId)
+            .NotNull().WithMessage("ID do apartamento é obrigatório")
+            .MustAsync(async (id, _) => !await this._apartmentsResidentsRepository.AlreadyExistOwnerApartment(id))
+            .WithMessage("Apartamento já tem um proprietário");
+        
+        
     }
 }
