@@ -67,7 +67,7 @@ namespace Application.UseCases.Resident
             await _userRepository.SaveAsync(user);
         }
 
-        private async Task SaveBuildingResidentsAndApartmentResidents(Apartment apartment, Building building, Domain.Models.Resident resident)
+        private async Task SaveBuildingResidentsAndApartmentResidents(Apartment apartment, Domain.Models.Building building, Domain.Models.Resident resident)
         {
             var buildingResidents = new BuildingResident() { Building = building, Resident = resident };
             var apartmentsResidents = new ApartmentResident() { Apartment = apartment, Resident = resident };

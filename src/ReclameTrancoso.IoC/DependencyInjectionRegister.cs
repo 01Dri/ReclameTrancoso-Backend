@@ -1,12 +1,15 @@
 ﻿using Application.Factory;
 using Application.Services;
 using Application.UseCases.Auth;
+using Application.UseCases.Building;
 using Application.UseCases.Resident;
 using Application.Validations.Auth;
 using Application.Validations.Resident;
 using Domain.Interfaces;
 using Domain.Models;
+using Domain.Models.DTOs;
 using Domain.Models.DTOs.Auth;
+using Domain.Models.DTOs.Building;
 using Domain.Models.DTOs.Resident;
 using FluentValidation;
 using Infrastructure.Data.Repositories;
@@ -46,6 +49,9 @@ public static class DependencyInjectionRegister
         
         services.AddScoped<IUseCaseHandler<ResidentRegisterRequestDTO, ResidentRegisterResponseDTO>,
             RegisterResidentUserCase>();
+        
+        services.AddScoped<IUseCaseHandler<GetRequest, BuildingResponseDTO>,
+            BuildingUseCase>();
         
         services.AddScoped<IUseCaseHandler<LoginRequestDTO, TokenResponseDTO>,
             LoginUseCase>();
