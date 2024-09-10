@@ -51,10 +51,13 @@ public static class DependencyInjectionRegister
             RegisterResidentUserCase>();
         
         services.AddScoped<IUseCaseHandler<GetRequest, BuildingResponseDTO>,
-            BuildingUseCase>();
+            GetBuildingsUseCase>();
         
         services.AddScoped<IUseCaseHandler<LoginRequestDTO, TokenResponseDTO>,
             LoginUseCase>();
+        
+        services.AddScoped<IUseCaseHandler<RefreshTokenRequestDTO, TokenResponseDTO>,
+            RefreshTokenUseCase>();
         return services;
     }
 
@@ -63,6 +66,8 @@ public static class DependencyInjectionRegister
     {
         services.AddScoped<IValidator<ResidentRegisterRequestDTO>, RegisterResidentRequestValidation>();
         services.AddScoped<IValidator<LoginRequestDTO>, LoginRequestValidation>();
+        services.AddScoped<IValidator<RefreshTokenRequestDTO>, RefreshTokenValidation>();
+
 
         return services;
     }

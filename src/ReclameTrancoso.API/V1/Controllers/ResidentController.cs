@@ -1,9 +1,7 @@
 ﻿using System.Net.Mime;
 using API.Utils;
 using Domain.Interfaces;
-using Domain.Models;
 using Domain.Models.DTOs.Resident;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.V1.Controllers;
@@ -12,7 +10,6 @@ namespace API.V1.Controllers;
 [Route(RouteUtils.API_V1_ROUTE + "resident")]
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
-[Authorize]
 public class ResidentController : ControllerBase
 {
     private readonly IUseCaseHandlerFactory _handlerFactory;

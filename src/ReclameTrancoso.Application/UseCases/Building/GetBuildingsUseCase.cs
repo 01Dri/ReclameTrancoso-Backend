@@ -5,11 +5,11 @@ using Domain.Models.DTOs.Building;
 
 namespace Application.UseCases.Building;
 
-public class BuildingUseCase : IUseCaseHandler<GetRequest, BuildingResponseDTO>
+public class GetBuildingsUseCase : IUseCaseHandler<GetRequest, BuildingResponseDTO>
 {
     private readonly IBuildingRepository _buildingRepository;
 
-    public BuildingUseCase(IBuildingRepository buildingRepository)
+    public GetBuildingsUseCase(IBuildingRepository buildingRepository)
     {
         _buildingRepository = buildingRepository;
     }

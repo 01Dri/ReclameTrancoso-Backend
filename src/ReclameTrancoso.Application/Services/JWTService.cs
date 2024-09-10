@@ -41,4 +41,38 @@ public class JWTService : ITokenService<User, TokenResponseDTO>
         var refreshTokenExpires = DateTime.UtcNow.AddDays(7);
         return new TokenResponseDTO(accessToken, refreshToken, tokenDescriptor.Expires, refreshTokenExpires);
     }
+
+    public bool ValidateToken(string token)
+    {
+        var secret = _configuration["Jwt:Key"];
+        var key = Encoding.ASCII.GetBytes(secret);
+
+        TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidIssuer = _configuration["Jwt:Issuer"],
+            ValidAudience = _configuration["Jwt:Audience"],
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero 
+        };
+        
+        try
+        {
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            ClaimsPrincipal principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken validatedToken);
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            return jwtToken.ValidTo > DateTime.UtcNow;
+        }
+        catch (SecurityTokenExpiredException)
+        {
+            return false;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
 }
