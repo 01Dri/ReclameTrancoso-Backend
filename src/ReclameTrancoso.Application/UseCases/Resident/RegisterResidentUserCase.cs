@@ -9,8 +9,6 @@ using ReclameTrancoso.Exceptions.Exceptions;
 
 namespace Application.UseCases.Resident
 {
-    
-    // Criar Os mappers, salvar resident no banco e inserir nas tabelas intermediarias
     public class RegisterResidentUserCase : IUseCaseHandler<ResidentRegisterRequestDTO, ResidentRegisterResponseDTO>
     {
         private readonly IValidator<ResidentRegisterRequestDTO> _validator;

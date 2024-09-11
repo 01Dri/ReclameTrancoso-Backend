@@ -7,4 +7,7 @@ public interface IResidentRepository : IRepositoryBase<Resident>
     Task<bool> AnyByEmailAsync(string email);
     Task<bool> AnyByCPFAsync(string cpf);
 
+    Task<Resident?> GetResidentByIdAsync(long id);
+
+
 }

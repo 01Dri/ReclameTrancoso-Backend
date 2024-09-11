@@ -33,4 +33,17 @@ public static class ResidentMapper
             UserId = entity.User?.Id
         };
     }
+    
+    public static ResidentResponseDTO ToResidentResponseDto(this Resident entity)
+    {
+        return new
+        (
+            entity.Id,
+            entity.Name,
+            entity.Email,
+            entity.BuildingResidents?.Select(x => x.BuildingId).ToList() ?? [],
+            entity.ApartmentResidents?.Select(x => x.ApartmentId).ToList() ?? [],
+            entity.User?.Id
+        );
+    }
 }

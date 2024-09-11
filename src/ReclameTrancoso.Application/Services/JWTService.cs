@@ -39,7 +39,7 @@ public class JWTService : ITokenService<User, TokenResponseDTO>
         var accessToken  = tokenHandler.WriteToken(token);
         var refreshToken = Guid.NewGuid().ToString();
         var refreshTokenExpires = DateTime.UtcNow.AddDays(7);
-        return new TokenResponseDTO(accessToken, refreshToken, tokenDescriptor.Expires, refreshTokenExpires);
+        return new TokenResponseDTO(user.ResidentId,accessToken, refreshToken, tokenDescriptor.Expires, refreshTokenExpires);
     }
 
     public bool ValidateToken(string token)

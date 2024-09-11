@@ -60,7 +60,7 @@ public class LoginUseCaseTests
             x.IsValidAsync(mockLoginRequest.Password,
                 It.IsAny<string>())).ReturnsAsync(true);
         _tokenService.Setup(x => x.GenerateToken(It.IsAny<User>()))
-            .Returns(new TokenResponseDTO("token", "refreshToken", DateTime.Now, DateTime.Now));
+            .Returns(new TokenResponseDTO(1,"token", "refreshToken", DateTime.Now, DateTime.Now));
 
         await _useCase.Handle(mockLoginRequest, new CancellationToken());
         
@@ -92,7 +92,7 @@ public class LoginUseCaseTests
             x.IsValidAsync(mockLoginRequest.Password,
                 It.IsAny<string>())).ReturnsAsync(true);
         _tokenService.Setup(x => x.GenerateToken(It.IsAny<User>()))
-            .Returns(new TokenResponseDTO("token", "refreshToken", DateTime.Now, DateTime.Now));
+            .Returns(new TokenResponseDTO(1,"token", "refreshToken", DateTime.Now, DateTime.Now));
 
         await _useCase.Handle(mockLoginRequest, new CancellationToken());
         

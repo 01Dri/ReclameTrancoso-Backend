@@ -58,6 +58,9 @@ public static class DependencyInjectionRegister
         
         services.AddScoped<IUseCaseHandler<RefreshTokenRequestDTO, TokenResponseDTO>,
             RefreshTokenUseCase>();
+        
+        services.AddScoped<IUseCaseHandler<GetByIdRequest, ResidentResponseDTO>,
+            GetResidentByIdUseCase>();
         return services;
     }
 
