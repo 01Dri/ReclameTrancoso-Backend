@@ -8,4 +8,6 @@ public class Resident : BaseEntity
     public virtual IEnumerable<ApartmentResident>? ApartmentResidents { get; set; }
     public string Cpf { get; set; } = string.Empty;
     public User? User { get; set; }
+    
+    public virtual IEnumerable<ResidentComplaint> Complaints { get; set; }
 }

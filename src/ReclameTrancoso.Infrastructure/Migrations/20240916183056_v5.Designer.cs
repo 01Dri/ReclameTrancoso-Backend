@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240916183056_v5")]
+    partial class v5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,27 +117,21 @@ namespace Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("AdditionalInformation1")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("AdditionalInformation2")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("AdditionalInformation3")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("ComplaintType")
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsAnonymous")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -176,10 +173,10 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("ComplaintId")
+                    b.Property<long>("ComplaintId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("ResidentId")
+                    b.Property<long>("ResidentId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -304,11 +301,15 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Models.Complaint", "Complaint")
                         .WithMany("ResidentComplaints")
-                        .HasForeignKey("ComplaintId");
+                        .HasForeignKey("ComplaintId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domain.Models.Resident", "Resident")
                         .WithMany("Complaints")
-                        .HasForeignKey("ResidentId");
+                        .HasForeignKey("ResidentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Complaint");
 

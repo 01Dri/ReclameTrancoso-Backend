@@ -12,6 +12,10 @@ public class DataContext : DbContext
     public DbSet<ApartmentResident> ApartmentResidents { get; set; }
     public DbSet<BuildingResident> BuildingResidents { get; set; }
     public DbSet<TokenEntity> TokenEntities { get; set; }
+    public DbSet<Complaint> Complaints { get; set; }
+    public DbSet<ResidentComplaint> ResidentComplaints { get; set; }
+    
+
 
     
     public DataContext(DbContextOptions options) : base(options)
@@ -32,7 +36,12 @@ public class DataContext : DbContext
         modelBuilder.Entity<User>()
             .HasKey(a => a.Id);
         
+        modelBuilder.Entity<Complaint>()
+            .HasKey(a => a.Id);
         
+        modelBuilder.Entity<ResidentComplaint>()
+            .HasKey(a => a.Id);
+
         modelBuilder.Entity<ApartmentResident>()
             .HasKey(a => a.Id);
         
@@ -83,6 +92,18 @@ public class DataContext : DbContext
             .WithOne(u => u.Token)
             .HasForeignKey<TokenEntity>(t => t.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ResidentComplaint>()
+            .HasOne<Resident>(rc => rc.Resident)
+            .WithMany(rc => rc.Complaints)
+            .HasForeignKey(rc => rc.ResidentId);
+            ;
+        
+        modelBuilder.Entity<ResidentComplaint>()
+            .HasOne<Complaint>(rc => rc.Complaint)
+            .WithMany(rc => rc.ResidentComplaints)
+            .HasForeignKey(rc => rc.ComplaintId);
+            ;
     }
     
 }
