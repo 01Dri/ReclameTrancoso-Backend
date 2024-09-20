@@ -2,14 +2,17 @@
 using Application.Services;
 using Application.UseCases.Auth;
 using Application.UseCases.Building;
+using Application.UseCases.Complaint;
 using Application.UseCases.Resident;
 using Application.Validations.Auth;
+using Application.Validations.Complaint;
 using Application.Validations.Resident;
 using Domain.Interfaces;
 using Domain.Models;
 using Domain.Models.DTOs;
 using Domain.Models.DTOs.Auth;
 using Domain.Models.DTOs.Building;
+using Domain.Models.DTOs.Complaint;
 using Domain.Models.DTOs.Resident;
 using FluentValidation;
 using Infrastructure.Data.Repositories;
@@ -36,6 +39,10 @@ public static class DependencyInjectionRegister
         services.AddScoped<IApartmentsResidentsRepository, ApartmentsResidentsRepository>();
         services.AddScoped<IBuildingResidentsRepository, BuildingsResidentsRepository>();
         services.AddScoped<ITokenRepository, TokenRepository>();
+        services.AddScoped<IComplaintRepository, ComplaintRepository>();
+        services.AddScoped<IResidentComplaintRepository, ResidentComplaintRepository>();
+        
+        
         services.AddScoped<IPasswordEncoder, BCryptPasswordEncoder>();
         services.AddScoped<IUnitOfWork, UnitOfWorkEF>();
         services.AddScoped<ITokenService<User, TokenResponseDTO>, JWTService>();
@@ -61,6 +68,9 @@ public static class DependencyInjectionRegister
         
         services.AddScoped<IUseCaseHandler<GetByIdRequest, ResidentResponseDTO>,
             GetResidentByIdUseCase>();
+        
+        services.AddScoped<IUseCaseHandler<ComplaintCreateRequestDTO, CreatedResponse>,
+            CreateComplaintUseCase>();
         return services;
     }
 
@@ -70,6 +80,8 @@ public static class DependencyInjectionRegister
         services.AddScoped<IValidator<ResidentRegisterRequestDTO>, RegisterResidentRequestValidation>();
         services.AddScoped<IValidator<LoginRequestDTO>, LoginRequestValidation>();
         services.AddScoped<IValidator<RefreshTokenRequestDTO>, RefreshTokenValidation>();
+        services.AddScoped<IValidator<ComplaintCreateRequestDTO>, CreateComplaintValidator>();
+
 
 
         return services;

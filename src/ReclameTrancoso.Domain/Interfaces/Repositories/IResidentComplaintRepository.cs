@@ -2,7 +2,7 @@ using Domain.Models;
 
 namespace Domain.Interfaces;
 
-public interface IComplaintRepository : IRepositoryBase<Complaint>
+public interface IResidentComplaintRepository : IRepositoryBase<ResidentComplaint>
 {
     
 }

@@ -1,3 +1,5 @@
+using Domain.Interfaces;
+
 namespace Domain.Models.DTOs;
 
-public record CreatedRequest(long id);
+public record CreatedResponse(long? id) : IUseCaseResponse;

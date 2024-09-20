@@ -1,6 +1,21 @@
+using Domain.Models;
+using Domain.Models.DTOs.Complaint;
+
 namespace Application.Mappers;
 
-public class ComplaintMapper
+public static class ComplaintMapper
 {
-    
+    public static Complaint ToEntity(this ComplaintCreateRequestDTO dto)
+    {
+        return new Complaint()
+        {
+            Title = dto.Title,
+            Description = dto.Description,
+            ComplaintType = dto.ComplaintType,
+            AdditionalInformation1 = dto.AdditionalInformation1,
+            AdditionalInformation2 = dto.AdditionalInformation2,
+            AdditionalInformation3 = dto.AdditionalInformation3,
+            IsAnonymous = dto.IsAnonymous
+        };
+    }
 }

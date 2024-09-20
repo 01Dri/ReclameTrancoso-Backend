@@ -1,6 +1,8 @@
+using Domain.Models;
+
 namespace Domain.Interfaces;
 
-public interface IComplaintRepository
+public interface IComplaintRepository : IRepositoryBase<Complaint>
 {
     
 }
