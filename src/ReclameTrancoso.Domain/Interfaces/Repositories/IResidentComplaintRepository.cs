@@ -6,6 +6,6 @@ namespace Domain.Interfaces;
 
 public interface IResidentComplaintRepository : IRepositoryBase<ResidentComplaint>
 {
-    Task<PagedResponseOffsetDto<ComplaintDto>> GetComplaintsById(GetByIdRequestPaginated requestPaginated);
+    Task<PagedResponseDto<ComplaintDto>> GetComplaintsById(GetRequestPaginated requestPaginated);
 
 }

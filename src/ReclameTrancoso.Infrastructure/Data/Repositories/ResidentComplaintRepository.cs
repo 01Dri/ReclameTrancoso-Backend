@@ -13,7 +13,7 @@ public class ResidentComplaintRepository : RepositoryBase<ResidentComplaint>, IR
     {
     }
 
-    public async Task<PagedResponseOffsetDto<ComplaintDto>> GetComplaintsById(GetByIdRequestPaginated requestPaginated)
+    public async Task<PagedResponseDto<ComplaintDto>> GetComplaintsById(GetRequestPaginated requestPaginated)
     {
         // condition ? consequent : alternative
 
@@ -45,7 +45,7 @@ public class ResidentComplaintRepository : RepositoryBase<ResidentComplaint>, IR
             Status = x.Status
         }).ToList();
         
-        return new PagedResponseOffsetDto<ComplaintDto>()
+        return new PagedResponseDto<ComplaintDto>()
         {
             PageNumber = requestPaginated.Page,
             PageSize = requestPaginated.Size,

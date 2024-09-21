@@ -3,7 +3,7 @@ using Domain.Interfaces;
 namespace Domain.Models.Pagination;
 
 
-public record PagedResponseOffsetDto<T> : IUseCaseResponse
+public record PagedResponseDto<T> : IUseCaseResponse
 {
     public int PageNumber { get; init; }
     public int PageSize { get; init; }

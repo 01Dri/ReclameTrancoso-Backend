@@ -5,7 +5,7 @@ using Domain.Models.Pagination;
 
 namespace Application.UseCases.Complaint;
 
-public class GetComplaintsByIdUseCase : IUseCaseHandler<GetByIdRequestPaginated, PagedResponseOffsetDto<ComplaintDto>>
+public class GetComplaintsByIdUseCase : IUseCaseHandler<GetRequestPaginated, PagedResponseDto<ComplaintDto>>
 {
     private readonly IResidentComplaintRepository _residentComplaintRepository;
 
@@ -14,7 +14,7 @@ public class GetComplaintsByIdUseCase : IUseCaseHandler<GetByIdRequestPaginated,
         _residentComplaintRepository = residentComplaintRepository;
     }
 
-    public async Task<PagedResponseOffsetDto<ComplaintDto>> Handle(GetByIdRequestPaginated? request, CancellationToken cancellationToken)
+    public async Task<PagedResponseDto<ComplaintDto>> Handle(GetRequestPaginated? request, CancellationToken cancellationToken)
     {
         return await this._residentComplaintRepository.GetComplaintsById(request);
     }

@@ -35,14 +35,14 @@ public class ComplaintController : ControllerBase
     }
     
     [HttpGet]
-    // [Authorize]
+    [Authorize]
     [Route("{id}")]
-    [ProducesResponseType(typeof(PagedResponseOffsetDto<ComplaintDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAsync([FromRoute]long id, [FromQuery] GetByIdRequestPaginated request,
+    [ProducesResponseType(typeof(PagedResponseDto<ComplaintDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAsync([FromRoute]long id, [FromQuery] GetRequestPaginated request,
         CancellationToken cancellationToken)
     {
         request.Id = id;
-        var handler = _handlerFactory.CreateHandler<GetByIdRequestPaginated, PagedResponseOffsetDto<ComplaintDto>>();
+        var handler = _handlerFactory.CreateHandler<GetRequestPaginated, PagedResponseDto<ComplaintDto>>();
         var response = await handler.Handle(request, cancellationToken);
         return Ok(response);
     }

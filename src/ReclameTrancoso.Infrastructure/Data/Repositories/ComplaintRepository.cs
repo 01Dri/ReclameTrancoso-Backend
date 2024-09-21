@@ -13,8 +13,8 @@ public class ComplaintRepository : RepositoryBase<Complaint>, IComplaintReposito
     {
     }
 
-    public async Task<PagedResponseOffsetDto<ComplaintDto>> GetComplaintsAsync(
-        GetByIdRequestPaginated requestPaginated)
+    public async Task<PagedResponseDto<ComplaintDto>> GetComplaintsAsync(
+        GetRequestPaginated requestPaginated)
     {
         var totalRecords = await this.DbSet.CountAsync();
         requestPaginated.Size = requestPaginated.Size == 0 ? 1 : requestPaginated.Size;
@@ -42,7 +42,7 @@ public class ComplaintRepository : RepositoryBase<Complaint>, IComplaintReposito
             Status = x.Status
         }).ToList();
 
-        return new PagedResponseOffsetDto<ComplaintDto>()
+        return new PagedResponseDto<ComplaintDto>()
         {
             PageNumber = requestPaginated.Page,
             PageSize = requestPaginated.Size,

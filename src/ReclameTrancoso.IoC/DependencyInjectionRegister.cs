@@ -73,7 +73,7 @@ public static class DependencyInjectionRegister
         services.AddScoped<IUseCaseHandler<ComplaintCreateRequestDTO, CreatedResponse>,
             CreateComplaintUseCase>();
         
-        services.AddScoped<IUseCaseHandler<GetByIdRequestPaginated, PagedResponseOffsetDto<ComplaintDto>>,
+        services.AddScoped<IUseCaseHandler<GetRequestPaginated, PagedResponseDto<ComplaintDto>>,
             GetComplaintsByIdUseCase>();
         
         return services;
