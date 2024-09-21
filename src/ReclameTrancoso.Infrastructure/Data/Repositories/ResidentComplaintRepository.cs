@@ -56,4 +56,9 @@ public class ResidentComplaintRepository : RepositoryBase<ResidentComplaint>, IR
             Data = complaintDtos
         };
     }
+
+    public async Task<bool> ExistsByResidentIdAsync(long? id)
+    {
+        return await this.DbSet.AnyAsync(x => x.ResidentId == id);
+    }
 }

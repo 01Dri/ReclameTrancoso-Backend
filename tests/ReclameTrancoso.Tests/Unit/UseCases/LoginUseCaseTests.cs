@@ -42,7 +42,7 @@ public class LoginUseCaseTests
     }
 
     [Fact]
-    public async Task Task_Successfully_WithCPF()
+    public async Task Test_Successfully_WithCPF()
     {
         var mockLoginRequest = new LoginRequestDTO()
         {
@@ -73,7 +73,7 @@ public class LoginUseCaseTests
     }
     
     [Fact]
-    public async Task Task_Successfully_WithEmail()
+    public async Task Test_Successfully_WithEmail()
     {
         var mockLoginRequest = new LoginRequestDTO()
         {
