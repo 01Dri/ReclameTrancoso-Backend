@@ -15,11 +15,20 @@ public class GetComplaintsByIdUseCase : IUseCaseHandler<GetRequestPaginated, Pag
         _residentComplaintRepository = residentComplaintRepository;
     }
 
-    public async Task<PagedResponseDto<ComplaintDto>> Handle(GetRequestPaginated? request, CancellationToken cancellationToken)
+    public async Task<PagedResponseDto<ComplaintDto>> Handle(GetRequestPaginated request, CancellationToken cancellationToken)
     {
         if (!await _residentComplaintRepository.ExistsByResidentIdAsync(request.Id))
         {
-            throw new NotFoundException("Residente não possui tickets cadastrados.");
+            return new PagedResponseDto<ComplaintDto>()
+            {
+                Data = [],
+                HasNext = false,
+                HasPrevious = false,
+                PageNumber = 0,
+                PageSize = 0,
+                TotalPages = 0,
+                TotalRecords = 0
+            };
         }
         return await this._residentComplaintRepository.
             GetComplaintsById(request);
