@@ -76,6 +76,9 @@ public static class DependencyInjectionRegister
         services.AddScoped<IUseCaseHandler<GetRequestPaginated, PagedResponseDto<ComplaintDto>>,
             GetComplaintsByIdUseCase>();
         
+        services.AddScoped<IUseCaseHandlerRes<DeleteRequest>,
+            DeleteComplaintByIdUseCase>();
+        
         return services;
     }
 

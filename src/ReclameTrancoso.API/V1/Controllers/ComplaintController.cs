@@ -46,6 +46,18 @@ public class ComplaintController : ControllerBase
         var response = await handler.Handle(request, cancellationToken);
         return Ok(response);
     }
-    
+
+    [HttpDelete]
+    [Authorize]
+    [Route("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> DeleteAsync([FromRoute] long id, CancellationToken cancellationToken)
+    {
+
+        var request = new DeleteRequest(id);
+        var handler = _handlerFactory.CreateHandler<DeleteRequest>();
+        await handler.Handle(request, cancellationToken);
+        return NoContent();
+    } 
     
 }
