@@ -62,13 +62,17 @@ public static class EntityRelationshipMappingExtension
 
         modelBuilder.Entity<UnionComplaintComments>()
             .HasOne(uc => uc.Complaint)
-            .WithMany(uc => uc.UnionComplaintComments)
-            .HasForeignKey(uc => uc.ComplaintId);
+            .WithOne(uc => uc.Comment).HasForeignKey<UnionComplaintComments>
+                (uc => uc.ComplaintId);
 
         modelBuilder.Entity<UnionComplaintComments>()
             .HasOne(uc => uc.Comment)
             .WithMany()
             .HasForeignKey(uc => uc.CommentId);
+        
+        modelBuilder.Entity<UnionComplaintComments>()
+            .HasIndex(uc => uc.ComplaintId)
+            .IsUnique();
 
         return modelBuilder;
     }
