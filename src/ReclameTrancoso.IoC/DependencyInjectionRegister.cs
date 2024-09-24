@@ -14,6 +14,7 @@ using Domain.Models.DTOs.Auth;
 using Domain.Models.DTOs.Building;
 using Domain.Models.DTOs.Complaint;
 using Domain.Models.DTOs.Resident;
+using Domain.Models.Pagination;
 using FluentValidation;
 using Infrastructure.Data.Repositories;
 using Infrastructure.Data.UnitOfWork;
@@ -71,6 +72,10 @@ public static class DependencyInjectionRegister
         
         services.AddScoped<IUseCaseHandler<ComplaintCreateRequestDTO, CreatedResponse>,
             CreateComplaintUseCase>();
+        
+        services.AddScoped<IUseCaseHandler<GetRequestPaginated, PagedResponseDto<ComplaintDto>>,
+            GetComplaintsByIdUseCase>();
+        
         return services;
     }
 

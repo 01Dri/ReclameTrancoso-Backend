@@ -1,8 +1,11 @@
 using System.Net.Mime;
 using API.Utils;
 using Domain.Interfaces;
+using Domain.Models;
 using Domain.Models.DTOs;
 using Domain.Models.DTOs.Complaint;
+using Domain.Models.Pagination;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.V1.Controllers;
@@ -30,5 +33,19 @@ public class ComplaintController : ControllerBase
         var response = await handler.Handle(request, cancellationToken);
         return Created(string.Empty, response);
     }
+    
+    [HttpGet]
+    [Authorize]
+    [Route("{id}")]
+    [ProducesResponseType(typeof(PagedResponseDto<ComplaintDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAsync([FromRoute]long id, [FromQuery] GetRequestPaginated request,
+        CancellationToken cancellationToken)
+    {
+        request.Id = id;
+        var handler = _handlerFactory.CreateHandler<GetRequestPaginated, PagedResponseDto<ComplaintDto>>();
+        var response = await handler.Handle(request, cancellationToken);
+        return Ok(response);
+    }
+    
     
 }
