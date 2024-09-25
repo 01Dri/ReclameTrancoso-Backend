@@ -30,4 +30,10 @@ public class ResidentRepository : RepositoryBase<Resident>, IResidentRepository
             .Where(x => x.Id == id)
             .FirstOrDefaultAsync();
     }
+
+    public async Task<long?> ExistByUserIdAsync(long? userId)
+    {
+        return  await this.DbSet.Where(x =>  x.UserId == userId)
+            .Select(x => x.Id).FirstOrDefaultAsync();
+    }
 }

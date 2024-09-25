@@ -1,4 +1,5 @@
 using Domain.Models;
+using Domain.Models.DTOs.Union;
 using Microsoft.EntityFrameworkCore;
 using ReclameTrancoso.Domain.Models;
 
@@ -13,13 +14,6 @@ public static class EntityRelationshipMappingExtension
             .WithMany(b => b.Apartments)
             .HasForeignKey(a => a.BuildingId);
 
-
-        modelBuilder.Entity<User>()
-            .HasOne<Resident>(u => u.Resident)
-            .WithOne(r => r.User)
-            .HasForeignKey<User>( r => r.ResidentId)
-            .OnDelete(DeleteBehavior.Cascade);
-        
 
         modelBuilder.Entity<ApartmentResident>()
             .HasOne<Resident>(ap => ap.Resident)
@@ -73,6 +67,10 @@ public static class EntityRelationshipMappingExtension
         modelBuilder.Entity<ManagerComplaintComments>()
             .HasIndex(uc => uc.ComplaintId)
             .IsUnique();
+
+        modelBuilder.Entity<Manager>()
+            .HasOne<User>(m => m.User).WithOne()
+            .HasForeignKey<Manager>(m => m.UserId);
 
         return modelBuilder;
     }

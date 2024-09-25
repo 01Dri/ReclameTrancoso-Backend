@@ -29,8 +29,7 @@ public class UserRepository: RepositoryBase<User>, IUserRepository
     {
         return await this.DbSet
             .Include(x => x.Token)
-            .Include(x => x.Resident)
-            .Where(x => x.Resident.Email == email)
+            .Where(x => x.Email == email)
             .FirstOrDefaultAsync();
     }
 }
