@@ -58,6 +58,19 @@ public class ComplaintController : ControllerBase
         var handler = _handlerFactory.CreateHandler<DeleteRequest>();
         await handler.Handle(request, cancellationToken);
         return NoContent();
-    } 
+    }
+
+    [HttpPut]
+    [Authorize]
+    [Route("{id}")]
+    [ProducesResponseType(typeof(ComplaintDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateAsync([FromRoute] long id, [FromBody] ComplaintUpdateRequestDTO request, CancellationToken cancellationToken)
+    {
+        request.Id = id;
+        var handler = _handlerFactory.CreateHandler<ComplaintUpdateRequestDTO, ComplaintDto>();
+        var response = await handler.Handle(request, cancellationToken);
+        return Ok(response);
+    }
+    
     
 }

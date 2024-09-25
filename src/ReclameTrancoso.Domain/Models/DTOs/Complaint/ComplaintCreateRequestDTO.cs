@@ -13,4 +13,5 @@ public class ComplaintCreateRequestDTO : IUseCaseRequest
     public string? AdditionalInformation2 { get; set; }
     public string? AdditionalInformation3 { get; set; }
     public bool IsAnonymous { get; set; }
+    public ComplaintStatus Status { get; set; }
 }

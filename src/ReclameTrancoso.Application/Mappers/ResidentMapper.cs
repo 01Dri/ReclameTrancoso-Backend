@@ -41,6 +41,7 @@ public static class ResidentMapper
             entity.Id,
             entity.Name,
             entity.Email,
+            entity.Cpf,
             entity.BuildingResidents?.Select(x => x.BuildingId).ToList() ?? [],
             entity.ApartmentResidents?.Select(x => x.ApartmentId).ToList() ?? [],
             entity.User?.Id

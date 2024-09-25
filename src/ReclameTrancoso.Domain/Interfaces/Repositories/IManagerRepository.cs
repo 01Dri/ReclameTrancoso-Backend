@@ -1,6 +1,8 @@
+using Domain.Models.DTOs.Union;
+
 namespace Domain.Interfaces;
 
-public interface IManagerRepository
+public interface IManagerRepository : IRepositoryBase<Manager>
 {
     
 }

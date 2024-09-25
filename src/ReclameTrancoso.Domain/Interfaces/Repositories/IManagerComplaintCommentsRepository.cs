@@ -1,6 +1,8 @@
+using ReclameTrancoso.Domain.Models;
+
 namespace Domain.Interfaces;
 
-public interface IManagerComplaintCommentsRepository
+public interface IManagerComplaintCommentsRepository : IRepositoryBase<ManagerComplaintComments>
 {
     
 }

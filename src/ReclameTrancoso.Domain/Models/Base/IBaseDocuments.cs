@@ -1,10 +1,10 @@
 namespace Domain.Models;
 
-public class BaseDocuments
+public interface IBaseDocuments
 {
-    public string Name { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string Cpf { get; set; } = string.Empty;
+    string Name { get; set; }
+    string Email { get; set; }
+    string Cpf { get; set; }
 
     
 }

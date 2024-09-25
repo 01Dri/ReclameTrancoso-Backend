@@ -3,9 +3,11 @@ using Application.Services;
 using Application.UseCases.Auth;
 using Application.UseCases.Building;
 using Application.UseCases.Complaint;
+using Application.UseCases.Manager;
 using Application.UseCases.Resident;
 using Application.Validations.Auth;
 using Application.Validations.Complaint;
+using Application.Validations.Manager;
 using Application.Validations.Resident;
 using Domain.Interfaces;
 using Domain.Models;
@@ -13,6 +15,7 @@ using Domain.Models.DTOs;
 using Domain.Models.DTOs.Auth;
 using Domain.Models.DTOs.Building;
 using Domain.Models.DTOs.Complaint;
+using Domain.Models.DTOs.Manager;
 using Domain.Models.DTOs.Resident;
 using Domain.Models.Pagination;
 using FluentValidation;
@@ -43,6 +46,9 @@ public static class DependencyInjectionRegister
         services.AddScoped<IComplaintRepository, ComplaintRepository>();
         services.AddScoped<IResidentComplaintRepository, ResidentComplaintRepository>();
         
+        services.AddScoped<ICommentRepository, CommentRepository>();
+        services.AddScoped<IManagerComplaintCommentsRepository, ManagerComplaintCommentsRepository>();
+        services.AddScoped<IManagerRepository, ManagerRepository>();
         
         services.AddScoped<IPasswordEncoder, BCryptPasswordEncoder>();
         services.AddScoped<IUnitOfWork, UnitOfWorkEF>();
@@ -71,13 +77,25 @@ public static class DependencyInjectionRegister
             GetResidentByIdUseCase>();
         
         services.AddScoped<IUseCaseHandler<ComplaintCreateRequestDTO, CreatedResponse>,
-            CreateComplaintUseCase>();
+            ComplaintCreateUseCase>();
         
         services.AddScoped<IUseCaseHandler<GetRequestPaginated, PagedResponseDto<ComplaintDto>>,
-            GetComplaintsByIdUseCase>();
+            ComplaintsGetByResidentIdUseCase>();
         
+        services.AddScoped<IUseCaseHandler<ManagerAddCommentRequestDTO, ManagerAddCommentResponseDTO>,
+            ManagerAddCommentUseCase>();
+        
+           
+        services.AddScoped<IUseCaseHandler<ComplaintUpdateRequestDTO, ComplaintDto>,
+            ComplaintUpdateUseCase>();
+        
+        return services;
+    }
+
+    public static IServiceCollection ConfigureUseCasesHandlersRes(this IServiceCollection services)
+    {
         services.AddScoped<IUseCaseHandlerRes<DeleteRequest>,
-            DeleteComplaintByIdUseCase>();
+            ComplaintDeleteByIdUseCase>();
         
         return services;
     }
@@ -89,7 +107,8 @@ public static class DependencyInjectionRegister
         services.AddScoped<IValidator<LoginRequestDTO>, LoginRequestValidation>();
         services.AddScoped<IValidator<RefreshTokenRequestDTO>, RefreshTokenValidation>();
         services.AddScoped<IValidator<ComplaintCreateRequestDTO>, CreateComplaintValidator>();
-
+        services.AddScoped<IValidator<ManagerAddCommentRequestDTO>, ManagerAddCommentValidator>();
+        services.AddScoped<IValidator<ComplaintUpdateRequestDTO>, ComplaintUpdateValidator>();
 
 
         return services;
