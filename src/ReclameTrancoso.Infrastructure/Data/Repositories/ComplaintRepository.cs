@@ -14,18 +14,18 @@ public class ComplaintRepository : RepositoryBase<Complaint>, IComplaintReposito
     }
 
     public async Task<PagedResponseDto<ComplaintDto>> GetComplaintsAsync(
-        GetRequestPaginated requestPaginated)
+        GetRequestPaginatedById requestPaginatedById)
     {
         var totalRecords = await this.DbSet.CountAsync();
-        requestPaginated.Size = requestPaginated.Size == 0 ? 1 : requestPaginated.Size;
-        var totalPages = (int)Math.Ceiling(totalRecords / (double)requestPaginated.Size);
-        requestPaginated.Page = requestPaginated.Page > totalPages ? 1 : requestPaginated.Page;
+        requestPaginatedById.Size = requestPaginatedById.Size == 0 ? 1 : requestPaginatedById.Size;
+        var totalPages = (int)Math.Ceiling(totalRecords / (double)requestPaginatedById.Size);
+        requestPaginatedById.Page = requestPaginatedById.Page > totalPages ? 1 : requestPaginatedById.Page;
         
         var complaints =  await this.DbSet
             .AsNoTrackingWithIdentityResolution()
             .OrderBy(x => x.Id)
-            .Skip((requestPaginated.Page - 1) * requestPaginated.Size)
-            .Take(requestPaginated.Size)
+            .Skip((requestPaginatedById.Page - 1) * requestPaginatedById.Size)
+            .Take(requestPaginatedById.Size)
             .ToListAsync();
         
 
@@ -44,12 +44,12 @@ public class ComplaintRepository : RepositoryBase<Complaint>, IComplaintReposito
 
         return new PagedResponseDto<ComplaintDto>()
         {
-            PageNumber = requestPaginated.Page,
-            PageSize = requestPaginated.Size,
+            PageNumber = requestPaginatedById.Page,
+            PageSize = requestPaginatedById.Size,
             TotalPages = totalPages,
             TotalRecords = totalRecords,
-            HasNext = requestPaginated.Page < totalPages,
-            HasPrevious = requestPaginated.Page > 1,
+            HasNext = requestPaginatedById.Page < totalPages,
+            HasPrevious = requestPaginatedById.Page > 1,
             Data = complaintDtos
         };
     }

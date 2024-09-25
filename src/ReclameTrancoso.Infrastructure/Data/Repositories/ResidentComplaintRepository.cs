@@ -15,25 +15,25 @@ public class ResidentComplaintRepository : RepositoryBase<ResidentComplaint>, IR
     {
     }
 
-    public async Task<PagedResponseDto<ComplaintDto>> GetComplaintsByIdAsync(GetRequestPaginated requestPaginated)
+    public async Task<PagedResponseDto<ComplaintDto>> GetComplaintsByIdAsync(GetRequestPaginatedById requestPaginatedById)
     {
         // condition ? consequent : alternative
 
-        var totalRecords = await this.DbSet.Where(x => x.ResidentId == requestPaginated.Id).CountAsync();
-        requestPaginated.Size = requestPaginated.Size == 0 ? 1 : requestPaginated.Size;
-        var totalPages = (int)Math.Ceiling(totalRecords / (double)requestPaginated.Size);
-        requestPaginated.Page = requestPaginated.Page > totalPages ? 1 : requestPaginated.Page;
+        var totalRecords = await this.DbSet.Where(x => x.ResidentId == requestPaginatedById.Id).CountAsync();
+        requestPaginatedById.Size = requestPaginatedById.Size == 0 ? 1 : requestPaginatedById.Size;
+        var totalPages = (int)Math.Ceiling(totalRecords / (double)requestPaginatedById.Size);
+        requestPaginatedById.Page = requestPaginatedById.Page > totalPages ? 1 : requestPaginatedById.Page;
         
         var complaints = await this.DbSet
             .AsNoTrackingWithIdentityResolution()
             .Include(x => x.Resident)
             .Include(x => x.Complaint).ThenInclude(c => c.Comment)
             .ThenInclude(uc => uc.Comment)
-            .Where(x => x.ResidentId == requestPaginated.Id)
+            .Where(x => x.ResidentId == requestPaginatedById.Id)
             .Select(x => x.Complaint)
             .OrderBy(x => x.Id)
-            .Skip((requestPaginated.Page - 1) * requestPaginated.Size)
-            .Take(requestPaginated.Size)
+            .Skip((requestPaginatedById.Page - 1) * requestPaginatedById.Size)
+            .Take(requestPaginatedById.Size)
             .ToListAsync();
 
         var complaintDtos = complaints.Select(x => new ComplaintDto()
@@ -52,22 +52,22 @@ public class ResidentComplaintRepository : RepositoryBase<ResidentComplaint>, IR
         
         return new PagedResponseDto<ComplaintDto>()
         {
-            PageNumber = requestPaginated.Page,
-            PageSize = requestPaginated.Size,
+            PageNumber = requestPaginatedById.Page,
+            PageSize = requestPaginatedById.Size,
             TotalPages = totalPages,
             TotalRecords = totalRecords,
-            HasNext = totalPages > requestPaginated.Page,
-            HasPrevious = requestPaginated.Page > 1,
+            HasNext = totalPages > requestPaginatedById.Page,
+            HasPrevious = requestPaginatedById.Page > 1,
             Data = complaintDtos
         };
     }
 
-    public async Task<PagedResponseDto<ComplaintDto>> GetComplaintsAsync(GetRequestPaginated requestPaginated)
+    public async Task<PagedResponseDto<ComplaintDto>> GetComplaintsAsync(GetRequestPaginated requestPaginatedById)
     {
         var totalRecords = await this.DbSet.CountAsync();
-        requestPaginated.Size = requestPaginated.Size == 0 ? 1 : requestPaginated.Size;
-        var totalPages = (int)Math.Ceiling(totalRecords / (double)requestPaginated.Size);
-        requestPaginated.Page = requestPaginated.Page > totalPages ? 1 : requestPaginated.Page;
+        requestPaginatedById.Size = requestPaginatedById.Size == 0 ? 1 : requestPaginatedById.Size;
+        var totalPages = (int)Math.Ceiling(totalRecords / (double)requestPaginatedById.Size);
+        requestPaginatedById.Page = requestPaginatedById.Page > totalPages ? 1 : requestPaginatedById.Page;
         
         var complaints = await this.DbSet
             .AsNoTrackingWithIdentityResolution()
@@ -76,8 +76,8 @@ public class ResidentComplaintRepository : RepositoryBase<ResidentComplaint>, IR
             .ThenInclude(uc => uc.Comment)
             .Select(x => x.Complaint)
             .OrderBy(x => x.Id)
-            .Skip((requestPaginated.Page - 1) * requestPaginated.Size)
-            .Take(requestPaginated.Size)
+            .Skip((requestPaginatedById.Page - 1) * requestPaginatedById.Size)
+            .Take(requestPaginatedById.Size)
             .ToListAsync();
 
         var complaintDtos = complaints.Select(x => new ComplaintDto()
@@ -96,12 +96,12 @@ public class ResidentComplaintRepository : RepositoryBase<ResidentComplaint>, IR
         
         return new PagedResponseDto<ComplaintDto>()
         {
-            PageNumber = requestPaginated.Page,
-            PageSize = requestPaginated.Size,
+            PageNumber = requestPaginatedById.Page,
+            PageSize = requestPaginatedById.Size,
             TotalPages = totalPages,
             TotalRecords = totalRecords,
-            HasNext = totalPages > requestPaginated.Page,
-            HasPrevious = requestPaginated.Page > 1,
+            HasNext = totalPages > requestPaginatedById.Page,
+            HasPrevious = requestPaginatedById.Page > 1,
             Data = complaintDtos
         };
     }
