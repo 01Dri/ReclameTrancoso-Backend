@@ -5,12 +5,12 @@ using ReclameTrancoso.Exceptions.Exceptions;
 
 namespace Application.UseCases.Complaint;
 
-public class DeleteComplaintByIdUseCase : IUseCaseHandlerRes<DeleteRequest>
+public class ComplaintDeleteByIdUseCase : IUseCaseHandlerRes<DeleteRequest>
 {
     private readonly IComplaintRepository _complaintRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public DeleteComplaintByIdUseCase(IComplaintRepository complaintRepository, IUnitOfWork unitOfWork)
+    public ComplaintDeleteByIdUseCase(IComplaintRepository complaintRepository, IUnitOfWork unitOfWork)
     {
         _complaintRepository = complaintRepository;
         _unitOfWork = unitOfWork;

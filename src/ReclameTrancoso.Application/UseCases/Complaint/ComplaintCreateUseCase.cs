@@ -9,7 +9,7 @@ using ReclameTrancoso.Domain.Interfaces.Transactions;
 
 namespace Application.UseCases.Complaint;
 
-public class CreateComplaintUseCase : IUseCaseHandler<ComplaintCreateRequestDTO, CreatedResponse>
+public class ComplaintCreateUseCase : IUseCaseHandler<ComplaintCreateRequestDTO, CreatedResponse>
 {
     private readonly IComplaintRepository _complaintRepository;
     private readonly IResidentComplaintRepository _residentComplaintRepository;
@@ -17,7 +17,7 @@ public class CreateComplaintUseCase : IUseCaseHandler<ComplaintCreateRequestDTO,
     private readonly IValidator<ComplaintCreateRequestDTO> _validator;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateComplaintUseCase(IComplaintRepository complaintRepository, IResidentComplaintRepository residentComplaintRepository, IResidentRepository residentRepository, IValidator<ComplaintCreateRequestDTO> validator, IUnitOfWork unitOfWork)
+    public ComplaintCreateUseCase(IComplaintRepository complaintRepository, IResidentComplaintRepository residentComplaintRepository, IResidentRepository residentRepository, IValidator<ComplaintCreateRequestDTO> validator, IUnitOfWork unitOfWork)
     {
         _complaintRepository = complaintRepository;
         _residentComplaintRepository = residentComplaintRepository;
