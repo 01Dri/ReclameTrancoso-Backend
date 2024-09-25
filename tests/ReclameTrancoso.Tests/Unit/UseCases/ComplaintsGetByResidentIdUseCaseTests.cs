@@ -9,15 +9,15 @@ using Xunit;
 
 namespace ReclameTrancoso.Tests.Unit.UseCases;
 
-public class GetComplaintsByIdUseCaseTests
+public class ComplaintsGetByResidentIdUseCaseTests
 {
     private readonly Mock<IResidentComplaintRepository> _residentComplaintRepository;  
-    private readonly GetComplaintsByIdUseCase _useCase;
+    private readonly ComplaintsGetByResidentIdUseCase _useCase;
 
-    public GetComplaintsByIdUseCaseTests()
+    public ComplaintsGetByResidentIdUseCaseTests()
     {
         _residentComplaintRepository = new Mock<IResidentComplaintRepository>();
-        _useCase = new GetComplaintsByIdUseCase(_residentComplaintRepository.Object);
+        _useCase = new ComplaintsGetByResidentIdUseCase(_residentComplaintRepository.Object);
     }
     
     [Fact]

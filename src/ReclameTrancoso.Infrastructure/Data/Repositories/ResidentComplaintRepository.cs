@@ -1,9 +1,11 @@
 using Domain.Interfaces;
 using Domain.Models;
+using Domain.Models.DTOs.Comments;
 using Domain.Models.DTOs.Complaint;
 using Domain.Models.Pagination;
 using Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using ReclameTrancoso.Domain.Enums;
 
 namespace Infrastructure.Data.Repositories;
 
@@ -25,6 +27,8 @@ public class ResidentComplaintRepository : RepositoryBase<ResidentComplaint>, IR
         var complaints = await this.DbSet
             .AsNoTrackingWithIdentityResolution()
             .Include(x => x.Resident)
+            .Include(x => x.Complaint).ThenInclude(c => c.Comment)
+            .ThenInclude(uc => uc.Comment)
             .Where(x => x.ResidentId == requestPaginated.Id)
             .Select(x => x.Complaint)
             .OrderBy(x => x.Id)
@@ -42,7 +46,8 @@ public class ResidentComplaintRepository : RepositoryBase<ResidentComplaint>, IR
             ComplaintType = x.ComplaintType,
             Description = x.Description,
             IsAnonymous = x.IsAnonymous,
-            Status = x.Status
+            Status = x.Comment != null ? ComplaintStatus.TREATED : ComplaintStatus.NO_TREATMENT,
+            ManagerComment = new CommentDTO(x.Comment?.CommentId, x.Comment?.Comment?.Text)
         }).ToList();
         
         return new PagedResponseDto<ComplaintDto>()

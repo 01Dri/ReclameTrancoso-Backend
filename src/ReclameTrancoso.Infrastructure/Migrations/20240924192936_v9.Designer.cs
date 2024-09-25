@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240924192936_v9")]
+    partial class v9
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,7 +146,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Complaints");
                 });
 
-            modelBuilder.Entity("Domain.Models.DTOs.Union.Manager", b =>
+            modelBuilder.Entity("Domain.Models.DTOs.Union.Union", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -165,7 +168,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Managers");
+                    b.ToTable("Unions");
                 });
 
             modelBuilder.Entity("Domain.Models.Resident", b =>
@@ -293,7 +296,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("ReclameTrancoso.Domain.Models.ManagerComplaintComments", b =>
+            modelBuilder.Entity("ReclameTrancoso.Domain.Models.UnionComplaintComments", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -307,19 +310,18 @@ namespace Infrastructure.Migrations
                     b.Property<long>("ComplaintId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("ManagerId")
+                    b.Property<long>("UnionId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CommentId");
 
-                    b.HasIndex("ComplaintId")
-                        .IsUnique();
+                    b.HasIndex("ComplaintId");
 
-                    b.HasIndex("ManagerId");
+                    b.HasIndex("UnionId");
 
-                    b.ToTable("ManagerComplaintComments");
+                    b.ToTable("UnionComplaintComments");
                 });
 
             modelBuilder.Entity("Domain.Models.Apartment", b =>
@@ -406,7 +408,7 @@ namespace Infrastructure.Migrations
                     b.Navigation("Resident");
                 });
 
-            modelBuilder.Entity("ReclameTrancoso.Domain.Models.ManagerComplaintComments", b =>
+            modelBuilder.Entity("ReclameTrancoso.Domain.Models.UnionComplaintComments", b =>
                 {
                     b.HasOne("ReclameTrancoso.Domain.Models.Comment", "Comment")
                         .WithMany()
@@ -415,14 +417,14 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Domain.Models.Complaint", "Complaint")
-                        .WithOne("Comment")
-                        .HasForeignKey("ReclameTrancoso.Domain.Models.ManagerComplaintComments", "ComplaintId")
+                        .WithMany("UnionComplaintComments")
+                        .HasForeignKey("ComplaintId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Models.DTOs.Union.Manager", "Manager")
+                    b.HasOne("Domain.Models.DTOs.Union.Union", "Union")
                         .WithMany("Comments")
-                        .HasForeignKey("ManagerId")
+                        .HasForeignKey("UnionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -430,7 +432,7 @@ namespace Infrastructure.Migrations
 
                     b.Navigation("Complaint");
 
-                    b.Navigation("Manager");
+                    b.Navigation("Union");
                 });
 
             modelBuilder.Entity("Domain.Models.Apartment", b =>
@@ -447,12 +449,12 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Complaint", b =>
                 {
-                    b.Navigation("Comment");
-
                     b.Navigation("ResidentComplaints");
+
+                    b.Navigation("UnionComplaintComments");
                 });
 
-            modelBuilder.Entity("Domain.Models.DTOs.Union.Manager", b =>
+            modelBuilder.Entity("Domain.Models.DTOs.Union.Union", b =>
                 {
                     b.Navigation("Comments");
                 });

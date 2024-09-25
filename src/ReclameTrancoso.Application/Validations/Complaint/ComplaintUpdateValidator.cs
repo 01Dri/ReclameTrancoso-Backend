@@ -4,19 +4,19 @@ using FluentValidation;
 
 namespace Application.Validations.Complaint;
 
-public class CreateComplaintValidator : AbstractValidator<ComplaintCreateRequestDTO>
+public class ComplaintUpdateValidator : AbstractValidator<ComplaintUpdateRequestDTO>
 {
-    private readonly IResidentRepository _residentRepository;
+    private readonly IComplaintRepository _complaintRepository;
 
-    public CreateComplaintValidator(IResidentRepository residentRepository)
+    public ComplaintUpdateValidator(IComplaintRepository complaintRepository)
     {
-        _residentRepository = residentRepository;
+        _complaintRepository = complaintRepository;
 
-        RuleFor(x => x.ResidentId)
-            .NotEmpty().WithMessage("Resident ID é obrigatório.")
-            .NotNull().WithMessage("Resident ID é obrigatório.")
-            .MustAsync(async (id, _) => await this._residentRepository.ExistsByIdAsync(id))
-            .WithMessage("Residente não existe.");
+        RuleFor(x => x.Id)
+            .NotEmpty().WithMessage("Complaint ID é obrigatório.")
+            .NotNull().WithMessage("Complaint ID é obrigatório.")
+            .MustAsync(async (id, _) => await this._complaintRepository.ExistsByIdAsync(id))
+            .WithMessage("Complaint não existe.");
 
         RuleFor(x => x.Title)
             .NotEmpty().WithMessage("Titulo é obrigatório.")

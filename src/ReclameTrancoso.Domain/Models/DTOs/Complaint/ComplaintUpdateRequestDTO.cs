@@ -1,10 +1,9 @@
 using Domain.Interfaces;
-using Domain.Models.DTOs.Comments;
 using ReclameTrancoso.Domain.Enums;
 
 namespace Domain.Models.DTOs.Complaint;
 
-public record ComplaintDto : IUseCaseResponse
+public class ComplaintUpdateRequestDTO : IUseCaseRequest
 {
     public long? Id { get; set; }
     public string Title { get; set; }
@@ -15,8 +14,4 @@ public record ComplaintDto : IUseCaseResponse
     public string? AdditionalInformation3 { get; set; }
     public bool IsAnonymous { get; set; }
     public ComplaintStatus Status { get; set; }
-    
-    public CommentDTO? ManagerComment { get; set; }
-    
-    
 }

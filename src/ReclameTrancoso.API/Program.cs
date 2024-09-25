@@ -23,6 +23,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 builder.Services.ConfigureService(builder.Configuration);
 builder.Services.ConfigureUseCasesHandlers();
+builder.Services.ConfigureUseCasesHandlersRes();
 builder.Services.ConfigureValidators();
 builder.Services.AddAuthentication(x =>
     {

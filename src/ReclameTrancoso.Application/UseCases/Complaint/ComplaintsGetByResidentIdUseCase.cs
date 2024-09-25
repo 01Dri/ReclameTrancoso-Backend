@@ -2,15 +2,14 @@ using Domain.Interfaces;
 using Domain.Models;
 using Domain.Models.DTOs.Complaint;
 using Domain.Models.Pagination;
-using ReclameTrancoso.Exceptions.Exceptions;
 
 namespace Application.UseCases.Complaint;
 
-public class GetComplaintsByIdUseCase : IUseCaseHandler<GetRequestPaginated, PagedResponseDto<ComplaintDto>>
+public class ComplaintsGetByResidentIdUseCase : IUseCaseHandler<GetRequestPaginated, PagedResponseDto<ComplaintDto>>
 {
     private readonly IResidentComplaintRepository _residentComplaintRepository;
 
-    public GetComplaintsByIdUseCase(IResidentComplaintRepository residentComplaintRepository)
+    public ComplaintsGetByResidentIdUseCase(IResidentComplaintRepository residentComplaintRepository)
     {
         _residentComplaintRepository = residentComplaintRepository;
     }
