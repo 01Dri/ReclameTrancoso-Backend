@@ -36,13 +36,13 @@ public static class EntityPrimaryKeyMappingExtension
         modelBuilder.Entity<TokenEntity>()
             .HasKey(t => t.Id);
         
-        modelBuilder.Entity<Union>()
+        modelBuilder.Entity<Manager>()
             .HasKey(t => t.Id);
         
         modelBuilder.Entity<Comment>()
             .HasKey(t => t.Id);
         
-        modelBuilder.Entity<UnionComplaintComments>()
+        modelBuilder.Entity<ManagerComplaintComments>()
             .HasKey(t => t.Id);
         
         

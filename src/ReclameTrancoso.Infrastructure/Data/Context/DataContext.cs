@@ -18,8 +18,8 @@ public class DataContext : DbContext
     public DbSet<Complaint> Complaints { get; set; }
     public DbSet<ResidentComplaint> ResidentComplaints { get; set; }
     public DbSet<Comment> Comments { get; set; }
-    public DbSet<Union> Unions { get; set; }
-    public DbSet<UnionComplaintComments> UnionComplaintComments { get; set; }
+    public DbSet<Manager> Managers { get; set; }
+    public DbSet<ManagerComplaintComments> ManagerComplaintComments { get; set; }
 
     
     public DataContext(DbContextOptions options) : base(options)
