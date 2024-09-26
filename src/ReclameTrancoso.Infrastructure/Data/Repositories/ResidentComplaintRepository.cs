@@ -91,7 +91,8 @@ public class ResidentComplaintRepository : RepositoryBase<ResidentComplaint>, IR
             Description = x.Description,
             IsAnonymous = x.IsAnonymous,
             Status = x.Comment != null ? ComplaintStatus.TREATED : ComplaintStatus.NO_TREATMENT,
-            ManagerComment = new CommentDTO(x.Comment?.CommentId, x.Comment?.Comment?.Text)
+            ManagerComment = new CommentDTO(x.Comment?.CommentId, x.Comment?.Comment?.Text),
+            ResidentId = x.ResidentId
         }).ToList();
         
         return new PagedResponseDto<ComplaintDto>()

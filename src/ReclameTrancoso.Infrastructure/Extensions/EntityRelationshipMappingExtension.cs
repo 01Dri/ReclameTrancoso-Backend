@@ -14,6 +14,9 @@ public static class EntityRelationshipMappingExtension
             .WithMany(b => b.Apartments)
             .HasForeignKey(a => a.BuildingId);
 
+          modelBuilder.Entity<Complaint>().HasOne<Resident>(c => c.Resident)
+              .WithMany().HasForeignKey(r => r.ResidentId);
+
 
         modelBuilder.Entity<ApartmentResident>()
             .HasOne<Resident>(ap => ap.Resident)
