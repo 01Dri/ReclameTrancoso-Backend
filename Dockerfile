@@ -35,6 +35,7 @@ ENV PATH="$PATH:/root/.dotnet/tools"
 
 # Configurar o ambiente
 ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ConnectionStrings__DefaultConnection="Host=db;Port=5432;Database=reclame_trancoso;Username=dridev;Password=130722;"
 
-# Comando de execução da aplicação
-ENTRYPOINT ["dotnet", "ReclameTrancoso.API.dll"]
+# Executar as migrações no início
+CMD ["bash", "-c", "dotnet ef database update -s ../ReclameTrancoso.API/ReclameTrancoso.API.dll -p ../ReclameTrancoso.Infrastructure/ReclameTrancoso.Infrastructure.csproj && dotnet ReclameTrancoso.API.dll"]
