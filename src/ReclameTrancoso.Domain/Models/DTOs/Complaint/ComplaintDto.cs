@@ -16,6 +16,8 @@ public record ComplaintDto : IUseCaseResponse
     public bool IsAnonymous { get; set; }
     public ComplaintStatus Status { get; set; }
     
+    public long? ResidentId { get; set; }
+    
     public CommentDTO? ManagerComment { get; set; }
     
     

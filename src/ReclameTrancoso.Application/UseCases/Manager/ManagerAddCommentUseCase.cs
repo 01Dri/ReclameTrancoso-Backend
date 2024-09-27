@@ -33,15 +33,17 @@ public class ManagerAddCommentUseCase : IUseCaseHandler<ManagerAddCommentRequest
         _unitOfWork.Begin();
         try
         {
-            var comment = new Comment()
-            {
-                Text = request.Comment
-            };
+            var entity = request.ToCommentEntity();
+            await _commentRepository.SaveAsync(entity);
 
-            await _commentRepository.SaveAsync(comment);
-            var managerComment = request.ToEntity();
+
+            var managerComment = await _managerComplaintCommentsRepository.GetByCommentIdAsync(entity.Id);
+            if (managerComment == null)
+            {
+                managerComment = request.ToEntity();
+            }
             
-            managerComment.CommentId = comment.Id;
+            managerComment.CommentId = entity.Id;
             await _managerComplaintCommentsRepository.SaveAsync(managerComment);
 
             var complaint = await _complaintRepository.GetByIdAsync(request.ComplaintId);

@@ -13,8 +13,8 @@ public class Complaint : BaseEntity
     public string? AdditionalInformation3 { get; set; }
     public bool IsAnonymous { get; set; }
     public ComplaintStatus Status { get; set; }
-    
-    public virtual IEnumerable<ResidentComplaint> ResidentComplaints { get; set; }
+    public long? ResidentId { get; set; }
+    public virtual Resident Resident { get; set; }
     public virtual ManagerComplaintComments? Comment { get; set; }
 
 }

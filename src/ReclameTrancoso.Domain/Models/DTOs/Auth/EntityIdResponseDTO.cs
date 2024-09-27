@@ -1,3 +1,3 @@
 namespace Domain.Models.DTOs.Auth;
 
-public record EntityIdResponseDTO();
+public record EntityIdResponseDTO(bool IsManager, long? EntityId);

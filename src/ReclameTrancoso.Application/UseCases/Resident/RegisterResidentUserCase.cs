@@ -60,7 +60,6 @@ namespace Application.UseCases.Resident
         private async Task SaveResidentAndUser(Domain.Models.Resident resident, User user)
         {
             await _residentRepository.SaveAsync(resident);
-            user.ResidentId = resident.Id;
             user.Password = await this._passwordEncoder.HashPasswordAsync(user.Password);
             await _userRepository.SaveAsync(user);
         }

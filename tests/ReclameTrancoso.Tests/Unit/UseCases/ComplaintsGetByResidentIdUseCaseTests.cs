@@ -23,7 +23,7 @@ public class ComplaintsGetByResidentIdUseCaseTests
     [Fact]
     public async Task Test_Successfully()
     {
-        var request = new GetRequestPaginated { Id = 1, Page = 1, Size = 10 };
+        var request = new GetRequestPaginatedById { Id = 1, Page = 1, Size = 10 };
         var pagedResponse = new PagedResponseDto<ComplaintDto>
         {
             PageNumber = 1,
@@ -34,7 +34,7 @@ public class ComplaintsGetByResidentIdUseCaseTests
         };
 
         _residentComplaintRepository.Setup(repo => repo.ExistsByResidentIdAsync(request.Id)).ReturnsAsync(true); 
-        _residentComplaintRepository.Setup(repo => repo.GetComplaintsById(request)).ReturnsAsync(pagedResponse);
+        _residentComplaintRepository.Setup(repo => repo.GetComplaintsByIdAsync(request)).ReturnsAsync(pagedResponse);
 
         var result = await _useCase.Handle(request, CancellationToken.None);
 
@@ -44,13 +44,13 @@ public class ComplaintsGetByResidentIdUseCaseTests
         Assert.Equal("Test Complaint", result.Data[0].Title);
 
         _residentComplaintRepository.Verify(repo => repo.ExistsByResidentIdAsync(request.Id), Times.Once);
-        _residentComplaintRepository.Verify(repo => repo.GetComplaintsById(request), Times.Once);
+        _residentComplaintRepository.Verify(repo => repo.GetComplaintsByIdAsync(request), Times.Once);
     }
 
     [Fact]
     public async Task Test_ShouldToReturnNotFoundException()
     {
-        var request = new GetRequestPaginated()
+        var request = new GetRequestPaginatedById()
         {
             Id = 1,
             Page = 2,
@@ -66,7 +66,7 @@ public class ComplaintsGetByResidentIdUseCaseTests
         Assert.Equal("Residente não possui tickets cadastrados.", resultException.Message);
 
         _residentComplaintRepository.Verify(x => x.ExistsByResidentIdAsync(It.IsAny<long?>()), Times.Once);
-        _residentComplaintRepository.Verify(x => x.GetComplaintsById(request), Times.Never);
+        _residentComplaintRepository.Verify(x => x.GetComplaintsByIdAsync(request), Times.Never);
 
     }
    
