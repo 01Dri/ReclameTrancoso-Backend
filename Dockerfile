@@ -37,5 +37,5 @@ ENV PATH="$PATH:/root/.dotnet/tools"
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV ConnectionStrings__DefaultConnection="Host=db;Port=5432;Database=reclame_trancoso;Username=dridev;Password=130722;"
 
-# Executar as migrações no início
-CMD ["bash", "-c", "dotnet ef database update -s ../ReclameTrancoso.API/ReclameTrancoso.API.dll -p ../ReclameTrancoso.Infrastructure/ReclameTrancoso.Infrastructure.csproj && dotnet ReclameTrancoso.API.dll"]
+# Entrar no diretório src e executar as migrações
+CMD ["bash", "-c", "cd /src && dotnet ef database update -s ../ReclameTrancoso.API/ReclameTrancoso.API.csproj -p ReclameTrancoso.Infrastructure/ReclameTrancoso.Infrastructure.csproj && dotnet /app/ReclameTrancoso.API.dll"]
