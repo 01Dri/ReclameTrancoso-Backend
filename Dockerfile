@@ -29,6 +29,10 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out .
 
+# Instalar dotnet-ef
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="$PATH:/root/.dotnet/tools"
+
 # Configurar o ambiente
 ENV ASPNETCORE_ENVIRONMENT=Development
 
