@@ -21,6 +21,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseNpgsql(connectionString));
 
+
 builder.Services.ConfigureService(builder.Configuration);
 builder.Services.ConfigureUseCasesHandlers();
 builder.Services.ConfigureUseCasesHandlersRes();
@@ -45,6 +46,25 @@ builder.Services.AddAuthentication(x =>
     });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        // Obtenha o contexto do banco de dados
+        var dbContext = services.GetRequiredService<DataContext>();
+        
+        // Aplique as migrações
+        dbContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        // Trate qualquer erro que ocorra durante a migração
+        Console.WriteLine($"Erro ao aplicar migrações: {ex.Message}");
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
