@@ -24,6 +24,11 @@ COPY ./src/ReclameTrancoso.IoC/. ./ReclameTrancoso.IoC/
 # Publicar a aplicação
 RUN dotnet publish ./ReclameTrancoso.API/ReclameTrancoso.API.csproj -c Release -o /app/out
 
+# Manter a estrutura de build para debug
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS debug
+WORKDIR /src
+COPY --from=build /src ./
+
 # Etapa de execução
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
