@@ -20,6 +20,10 @@ COPY ./src/ReclameTrancoso.Domain/. ./ReclameTrancoso.Domain/
 COPY ./src/ReclameTrancoso.Exceptions/. ./ReclameTrancoso.Exceptions/
 COPY ./src/ReclameTrancoso.Infrastructure/. ./ReclameTrancoso.Infrastructure/
 COPY ./src/ReclameTrancoso.IoC/. ./ReclameTrancoso.IoC/
+COPY init-db.sh .
+
+# Tornar o script executável
+RUN chmod +x init-db.sh
 
 # Publicar a aplicação
 RUN dotnet publish ./ReclameTrancoso.API/ReclameTrancoso.API.csproj -c Release -o /app/out
@@ -28,9 +32,10 @@ RUN dotnet publish ./ReclameTrancoso.API/ReclameTrancoso.API.csproj -c Release -
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out .
+COPY --from=build /src/init-db.sh .
 
 # Configurar o ambiente
 ENV ASPNETCORE_ENVIRONMENT=Development
 
 # Comando de execução da aplicação
-ENTRYPOINT ["dotnet", "ReclameTrancoso.API.dll"]
+ENTRYPOINT ["./init-db.sh"]
