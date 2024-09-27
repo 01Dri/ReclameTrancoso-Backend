@@ -20,6 +20,9 @@ public class LoginUseCaseTests
     private readonly Mock<IValidator<LoginRequestDTO>> _validator;
     private readonly Mock<ITokenRepository> _tokenRepository;
     private readonly Mock<IUnitOfWork> _unitOfWork;
+    private readonly Mock<IManagerRepository> _managerRepository;
+    private readonly Mock<IResidentRepository> _residentRepository;
+
     private readonly LoginUseCase _useCase;
 
     public LoginUseCaseTests()
@@ -30,6 +33,9 @@ public class LoginUseCaseTests
         _validator = new Mock<IValidator<LoginRequestDTO>>();
         _tokenRepository = new Mock<ITokenRepository>();
         _unitOfWork = new Mock<IUnitOfWork>();
+        _managerRepository = new Mock<IManagerRepository>();
+        _residentRepository = new Mock<IResidentRepository>();
+        
         _useCase = new LoginUseCase
             (
                 _userRepository.Object,
@@ -37,7 +43,9 @@ public class LoginUseCaseTests
                 _tokenService.Object,
                 _validator.Object,
                 _tokenRepository.Object,
-                _unitOfWork.Object
+                _unitOfWork.Object,
+                _managerRepository.Object,
+                _residentRepository.Object
             );
     }
 
@@ -60,7 +68,7 @@ public class LoginUseCaseTests
             x.IsValidAsync(mockLoginRequest.Password,
                 It.IsAny<string>())).ReturnsAsync(true);
         _tokenService.Setup(x => x.GenerateToken(It.IsAny<User>()))
-            .Returns(new TokenResponseDTO(1,"token", "refreshToken", DateTime.Now, DateTime.Now));
+            .Returns(new TokenResponseDTO("token", "refreshToken", DateTime.Now, DateTime.Now, null));
 
         await _useCase.Handle(mockLoginRequest, new CancellationToken());
         
@@ -92,7 +100,7 @@ public class LoginUseCaseTests
             x.IsValidAsync(mockLoginRequest.Password,
                 It.IsAny<string>())).ReturnsAsync(true);
         _tokenService.Setup(x => x.GenerateToken(It.IsAny<User>()))
-            .Returns(new TokenResponseDTO(1,"token", "refreshToken", DateTime.Now, DateTime.Now));
+            .Returns(new TokenResponseDTO("token", "refreshToken", DateTime.Now, DateTime.Now, null));
 
         await _useCase.Handle(mockLoginRequest, new CancellationToken());
         

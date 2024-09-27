@@ -37,10 +37,6 @@ public class CreateComplaintValidator : AbstractValidator<ComplaintCreateRequest
         RuleFor(x => x.IsAnonymous)
             .NotNull().WithMessage("Opção de anonimato é obrigatória.");
         
-        RuleFor(x => x.Status)
-            .NotEmpty().WithMessage("Status é obrigatório.")
-            .NotNull().WithMessage("Status é obrigatório.")
-            .IsInEnum().WithMessage("Status inválido.");
     }
 
 }

@@ -23,6 +23,17 @@ public class ComplaintController : ControllerBase
         _handlerFactory = handlerFactory;
     }
     
+    [HttpGet]
+    [Authorize(Roles = "MANAGER")]
+    [ProducesResponseType(typeof(PagedResponseDto<ComplaintDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAsync([FromQuery] GetRequestPaginated request,
+        CancellationToken cancellationToken)
+    {
+        var handler = _handlerFactory.CreateHandler<GetRequestPaginated, PagedResponseDto<ComplaintDto>>();
+        var response = await handler.Handle(request, cancellationToken);
+        return Ok(response);
+    }
+    
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -38,11 +49,11 @@ public class ComplaintController : ControllerBase
     [Authorize]
     [Route("{id}")]
     [ProducesResponseType(typeof(PagedResponseDto<ComplaintDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAsync([FromRoute]long id, [FromQuery] GetRequestPaginated request,
+    public async Task<IActionResult> GetAsync([FromRoute]long id, [FromQuery] GetRequestPaginatedById request,
         CancellationToken cancellationToken)
     {
         request.Id = id;
-        var handler = _handlerFactory.CreateHandler<GetRequestPaginated, PagedResponseDto<ComplaintDto>>();
+        var handler = _handlerFactory.CreateHandler<GetRequestPaginatedById, PagedResponseDto<ComplaintDto>>();
         var response = await handler.Handle(request, cancellationToken);
         return Ok(response);
     }

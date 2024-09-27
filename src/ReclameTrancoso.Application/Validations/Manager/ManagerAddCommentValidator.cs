@@ -26,7 +26,7 @@ public class ManagerAddCommentValidator : AbstractValidator<ManagerAddCommentReq
             .MustAsync(async (id, _) =>  await _complaintRepository.ExistsByIdAsync(id)).WithMessage("Manager não existe.");
 
 
-        RuleFor(x => x.Comment)
+        RuleFor(x => x.Comment.Text)
             .NotNull().WithMessage("Comment é obrigatório.")
             .NotEmpty().WithMessage("Comment é obrigatório.")
             .Length(5, 255).WithMessage("Comentário deve ter entre 5 a 255 caracteres.");

@@ -79,7 +79,7 @@ public static class DependencyInjectionRegister
         services.AddScoped<IUseCaseHandler<ComplaintCreateRequestDTO, CreatedResponse>,
             ComplaintCreateUseCase>();
         
-        services.AddScoped<IUseCaseHandler<GetRequestPaginated, PagedResponseDto<ComplaintDto>>,
+        services.AddScoped<IUseCaseHandler<GetRequestPaginatedById, PagedResponseDto<ComplaintDto>>,
             ComplaintsGetByResidentIdUseCase>();
         
         services.AddScoped<IUseCaseHandler<ManagerAddCommentRequestDTO, ManagerAddCommentResponseDTO>,
@@ -88,6 +88,10 @@ public static class DependencyInjectionRegister
            
         services.AddScoped<IUseCaseHandler<ComplaintUpdateRequestDTO, ComplaintDto>,
             ComplaintUpdateUseCase>();
+        
+        services.AddScoped<IUseCaseHandler<GetRequestPaginated, PagedResponseDto<ComplaintDto>>,
+            ComplaintGetUseCase>();
+
         
         return services;
     }

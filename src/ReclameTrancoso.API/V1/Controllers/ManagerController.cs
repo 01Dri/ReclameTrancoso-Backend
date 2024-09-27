@@ -23,6 +23,7 @@ public class ManagerController : ControllerBase
     
     [HttpPost]
     [Authorize]
+    [Route("add-comment")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ManagerAddCommentResponseDTO), StatusCodes.Status201Created)]

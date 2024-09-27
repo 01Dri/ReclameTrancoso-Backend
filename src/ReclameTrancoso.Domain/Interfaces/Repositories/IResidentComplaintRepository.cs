@@ -6,6 +6,7 @@ namespace Domain.Interfaces;
 
 public interface IResidentComplaintRepository : IRepositoryBase<ResidentComplaint>
 {
-    Task<PagedResponseDto<ComplaintDto>> GetComplaintsById(GetRequestPaginated requestPaginated);
+    Task<PagedResponseDto<ComplaintDto>> GetComplaintsByIdAsync(GetRequestPaginatedById requestPaginatedById);
+    Task<PagedResponseDto<ComplaintDto>> GetComplaintsAsync(GetRequestPaginated requestPaginatedById);
     Task<bool> ExistsByResidentIdAsync(long? id);
 }

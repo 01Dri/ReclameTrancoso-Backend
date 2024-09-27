@@ -1,5 +1,6 @@
 using Domain.Models;
 using Domain.Models.DTOs.Resident;
+using ReclameTrancoso.Domain.Enums;
 
 namespace Application.Mappers;
 
@@ -14,8 +15,10 @@ public static class ResidentMapper
             Cpf = dto.Cpf,
             User = new User()
             {
+                Email = dto.Email,
                 Cpf = dto.Cpf,
-                Password = dto.Password
+                Password = dto.Password,
+                Role = Role.RESIDENT
             }
         };
     }

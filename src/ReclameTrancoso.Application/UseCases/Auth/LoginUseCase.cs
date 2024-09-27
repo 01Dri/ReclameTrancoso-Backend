@@ -17,8 +17,10 @@ public class LoginUseCase : IUseCaseHandler<LoginRequestDTO, TokenResponseDTO>
     private readonly IValidator<LoginRequestDTO> _validator;
     private readonly ITokenRepository _tokenRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IManagerRepository _managerRepository;
+    private readonly IResidentRepository _residentRepository;
 
-    public LoginUseCase(IUserRepository userRepository, IPasswordEncoder passwordEncoder, ITokenService<User, TokenResponseDTO> tokenService, IValidator<LoginRequestDTO> validator, ITokenRepository tokenRepository, IUnitOfWork unitOfWork)
+    public LoginUseCase(IUserRepository userRepository, IPasswordEncoder passwordEncoder, ITokenService<User, TokenResponseDTO> tokenService, IValidator<LoginRequestDTO> validator, ITokenRepository tokenRepository, IUnitOfWork unitOfWork, IManagerRepository managerRepository, IResidentRepository residentRepository)
     {
         _userRepository = userRepository;
         _passwordEncoder = passwordEncoder;
@@ -26,6 +28,8 @@ public class LoginUseCase : IUseCaseHandler<LoginRequestDTO, TokenResponseDTO>
         _validator = validator;
         _tokenRepository = tokenRepository;
         _unitOfWork = unitOfWork;
+        _managerRepository = managerRepository;
+        _residentRepository = residentRepository;
     }
 
 
@@ -38,6 +42,7 @@ public class LoginUseCase : IUseCaseHandler<LoginRequestDTO, TokenResponseDTO>
             var user = await this._userRepository.GetByCPFAsync(request.Cpf) ??
                        await this._userRepository.GetByEmailAsync(request.Email) ??
                        throw new NotFoundException("Usuário não encontrado");
+            
             
             if (!await _passwordEncoder.IsValidAsync(request.Password, user.Password))
             {
@@ -64,7 +69,16 @@ public class LoginUseCase : IUseCaseHandler<LoginRequestDTO, TokenResponseDTO>
                 };
             }
             await _tokenRepository.SaveAsync(userToken);
+
+            long? entityId;
+
+            entityId = await _managerRepository.ExistByUserIdAsync(user.Id);
+            tokenResponse.EntityId = new 
+                EntityIdResponseDTO(entityId.HasValue, entityId ??
+                                    await _residentRepository.ExistByUserIdAsync(user.Id));
+
             _unitOfWork.Commit();
+            
             return tokenResponse;
         }
         catch

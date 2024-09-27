@@ -33,6 +33,7 @@ public class AuthController :   ControllerBase
         var response = await handler.Handle(request, cancellationToken);
         return Ok(response);
     }
+
     
     [HttpPost]
     [Route("refresh-token")]

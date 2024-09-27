@@ -6,5 +6,5 @@ namespace Domain.Interfaces;
 
 public interface IComplaintRepository : IRepositoryBase<Complaint>
 {
-    Task<PagedResponseDto<ComplaintDto>> GetComplaintsAsync(GetRequestPaginated requestPaginated);
+    Task<PagedResponseDto<ComplaintDto>> GetComplaintsAsync(GetRequestPaginatedById requestPaginatedById);
 }

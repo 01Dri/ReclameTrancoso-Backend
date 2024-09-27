@@ -27,7 +27,9 @@ public class JWTService : ITokenService<User, TokenResponseDTO>
         {
             Subject = new ClaimsIdentity(new Claim[]
             {
-                new Claim(ClaimTypes.Name, user.Cpf)
+                new Claim(ClaimTypes.Name, user.Cpf),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
+
             }),
             Expires = DateTime.UtcNow.AddDays(2),
             SigningCredentials =
@@ -39,7 +41,7 @@ public class JWTService : ITokenService<User, TokenResponseDTO>
         var accessToken  = tokenHandler.WriteToken(token);
         var refreshToken = Guid.NewGuid().ToString();
         var refreshTokenExpires = DateTime.UtcNow.AddDays(7);
-        return new TokenResponseDTO(user.ResidentId,accessToken, refreshToken, tokenDescriptor.Expires, refreshTokenExpires);
+        return new TokenResponseDTO(accessToken, refreshToken, tokenDescriptor.Expires, refreshTokenExpires, null);
     }
 
     public bool ValidateToken(string token)
@@ -74,5 +76,11 @@ public class JWTService : ITokenService<User, TokenResponseDTO>
         {
             return false;
         }
+    }
+
+    public EntityIdResponseDTO GetEntityIdByToken(string token)
+    {
+        
+        throw new NotImplementedException();
     }
 }
