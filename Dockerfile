@@ -13,9 +13,6 @@ COPY ./src/ReclameTrancoso.IoC/*.csproj ./ReclameTrancoso.IoC/
 # Restore para todas as dependências
 RUN dotnet restore ./ReclameTrancoso.API/ReclameTrancoso.API.csproj
 
-# Instalar dotnet-ef
-RUN dotnet tool install --global dotnet-ef
-
 # Copiar os arquivos da aplicação
 COPY ./src/ReclameTrancoso.API/. ./ReclameTrancoso.API/
 COPY ./src/ReclameTrancoso.Application/. ./ReclameTrancoso.Application/
@@ -28,9 +25,13 @@ COPY ./src/ReclameTrancoso.IoC/. ./ReclameTrancoso.IoC/
 RUN dotnet publish ./ReclameTrancoso.API/ReclameTrancoso.API.csproj -c Release -o /app/out
 
 # Etapa de execução
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out .
+
+# Instalar dotnet-ef
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="$PATH:/root/.dotnet/tools"
 
 # Configurar o ambiente
 ENV ASPNETCORE_ENVIRONMENT=Development
