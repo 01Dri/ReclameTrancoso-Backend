@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240925132750_v12")]
-    partial class v12
+    [Migration("20240928001323_v1")]
+    partial class v1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -134,6 +134,9 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("IsAnonymous")
                         .HasColumnType("boolean");
 
+                    b.Property<long?>("ResidentId")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -142,6 +145,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ResidentId");
 
                     b.ToTable("Complaints");
                 });
@@ -166,7 +171,13 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Managers");
                 });
@@ -191,7 +202,12 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Residents");
                 });
@@ -264,17 +280,18 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long?>("ResidentId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ResidentId")
-                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -288,7 +305,6 @@ namespace Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Text")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -304,13 +320,13 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("CommentId")
+                    b.Property<long?>("CommentId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("ComplaintId")
+                    b.Property<long?>("ComplaintId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("ManagerId")
+                    b.Property<long?>("ManagerId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -374,10 +390,37 @@ namespace Infrastructure.Migrations
                     b.Navigation("Resident");
                 });
 
+            modelBuilder.Entity("Domain.Models.Complaint", b =>
+                {
+                    b.HasOne("Domain.Models.Resident", "Resident")
+                        .WithMany()
+                        .HasForeignKey("ResidentId");
+
+                    b.Navigation("Resident");
+                });
+
+            modelBuilder.Entity("Domain.Models.DTOs.Union.Manager", b =>
+                {
+                    b.HasOne("Domain.Models.User", "User")
+                        .WithOne()
+                        .HasForeignKey("Domain.Models.DTOs.Union.Manager", "UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Models.Resident", b =>
+                {
+                    b.HasOne("Domain.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Models.ResidentComplaint", b =>
                 {
                     b.HasOne("Domain.Models.Complaint", "Complaint")
-                        .WithMany("ResidentComplaints")
+                        .WithMany()
                         .HasForeignKey("ComplaintId");
 
                     b.HasOne("Domain.Models.Resident", "Resident")
@@ -399,35 +442,19 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Models.User", b =>
-                {
-                    b.HasOne("Domain.Models.Resident", "Resident")
-                        .WithOne("User")
-                        .HasForeignKey("Domain.Models.User", "ResidentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Resident");
-                });
-
             modelBuilder.Entity("ReclameTrancoso.Domain.Models.ManagerComplaintComments", b =>
                 {
                     b.HasOne("ReclameTrancoso.Domain.Models.Comment", "Comment")
                         .WithMany()
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CommentId");
 
                     b.HasOne("Domain.Models.Complaint", "Complaint")
                         .WithOne("Comment")
-                        .HasForeignKey("ReclameTrancoso.Domain.Models.ManagerComplaintComments", "ComplaintId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ReclameTrancoso.Domain.Models.ManagerComplaintComments", "ComplaintId");
 
                     b.HasOne("Domain.Models.DTOs.Union.Manager", "Manager")
                         .WithMany("Comments")
-                        .HasForeignKey("ManagerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ManagerId");
 
                     b.Navigation("Comment");
 
@@ -451,8 +478,6 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Models.Complaint", b =>
                 {
                     b.Navigation("Comment");
-
-                    b.Navigation("ResidentComplaints");
                 });
 
             modelBuilder.Entity("Domain.Models.DTOs.Union.Manager", b =>
@@ -467,8 +492,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("BuildingResidents");
 
                     b.Navigation("Complaints");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Models.User", b =>
