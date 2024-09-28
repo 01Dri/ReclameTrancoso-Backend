@@ -50,18 +50,37 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    try
+    int maxRetryAttempts = 5; // Número máximo de tentativas
+    int delayBetweenRetries = 2000; // Tempo de espera entre tentativas em milissegundos
+
+    for (int attempt = 0; attempt < maxRetryAttempts; attempt++)
     {
-        // Obtenha o contexto do banco de dados
-        var dbContext = services.GetRequiredService<DataContext>();
-        
-        // Aplique as migrações
-        dbContext.Database.Migrate();
-    }
-    catch (Exception ex)
-    {
-        // Trate qualquer erro que ocorra durante a migração
-        Console.WriteLine($"Erro ao aplicar migrações: {ex.Message}");
+        try
+        {
+            // Obtenha o contexto do banco de dados
+            var dbContext = services.GetRequiredService<DataContext>();
+            
+            // Aplique as migrações
+            dbContext.Database.Migrate();
+            break; // Saia do loop se a migração for bem-sucedida
+        }
+        catch (Exception ex)
+        {
+            // Trate qualquer erro que ocorra durante a migração
+            Console.WriteLine($"Erro ao aplicar migrações (tentativa {attempt + 1}): {ex.Message}");
+
+            if (attempt < maxRetryAttempts - 1)
+            {
+                // Aguarde antes de tentar novamente
+                Console.WriteLine($"Aguardando {delayBetweenRetries / 1000} segundos antes de tentar novamente...");
+                await Task.Delay(delayBetweenRetries);
+            }
+            else
+            {
+                // Se todas as tentativas falharem, lançar a exceção ou registrar o erro
+                throw; // Opcional: lance a exceção novamente para tratamento posterior
+            }
+        }
     }
 }
 
