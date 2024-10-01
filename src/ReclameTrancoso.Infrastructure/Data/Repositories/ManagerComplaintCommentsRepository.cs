@@ -15,4 +15,16 @@ public class ManagerComplaintCommentsRepository : RepositoryBase<ManagerComplain
     {
         return this.DbSet.Where(x => x.CommentId == entityId).FirstOrDefaultAsync();
     }
+
+    public async Task DeleteByComplaintIdAsync(long complaintId)
+    {
+        var entity = await this.DbSet.Where(x =>
+            x.ComplaintId == complaintId).FirstOrDefaultAsync();
+
+        if (entity != null)
+        {
+            this.DbSet.Remove(entity);
+        }
+        
+    }
 }

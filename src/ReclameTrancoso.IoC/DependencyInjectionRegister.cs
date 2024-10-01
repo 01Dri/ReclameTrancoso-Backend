@@ -32,8 +32,11 @@ namespace ReclameTrancoso.IoC;
 
 public static class DependencyInjectionRegister
 {
-    
-    public static IServiceCollection ConfigureService(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection ConfigureService
+    (
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
         services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
         services.AddScoped<IApartmentRepository, ApartmentRepository>();
@@ -53,7 +56,6 @@ public static class DependencyInjectionRegister
         services.AddScoped<IPasswordEncoder, BCryptPasswordEncoder>();
         services.AddScoped<IUnitOfWork, UnitOfWorkEF>();
         services.AddScoped<ITokenService<User, TokenResponseDTO>, JWTService>();
-        
 
         return services;
     }
@@ -82,9 +84,10 @@ public static class DependencyInjectionRegister
         services.AddScoped<IUseCaseHandler<GetRequestPaginatedById, PagedResponseDto<ComplaintDto>>,
             ComplaintsGetByResidentIdUseCase>();
         
-        services.AddScoped<IUseCaseHandler<ManagerAddCommentRequestDTO, ManagerAddCommentResponseDTO>,
+        services.AddScoped<IUseCaseHandler<
+            ManagerAddCommentRequestDTO, 
+            ManagerAddCommentResponseDTO>,
             ManagerAddCommentUseCase>();
-        
            
         services.AddScoped<IUseCaseHandler<ComplaintUpdateRequestDTO, ComplaintDto>,
             ComplaintUpdateUseCase>();
