@@ -1,6 +1,7 @@
 using System.Text;
 using API.Middlwares;
 using Infrastructure.Data.Context;
+using Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -15,14 +16,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+Console.WriteLine("ENVIROMENT: " + env);
 builder.Configuration.AddJsonFile($"appsettings.{env}.json", false, true).Build();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseNpgsql(connectionString));
 
+
 builder.Services.ConfigureService(builder.Configuration);
 builder.Services.ConfigureUseCasesHandlers();
+builder.Services.ConfigureUseCasesHandlersRes();
 builder.Services.ConfigureValidators();
 builder.Services.AddAuthentication(x =>
     {
@@ -44,6 +48,8 @@ builder.Services.AddAuthentication(x =>
     });
 
 var app = builder.Build();
+await app.Services.RunMigrations();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

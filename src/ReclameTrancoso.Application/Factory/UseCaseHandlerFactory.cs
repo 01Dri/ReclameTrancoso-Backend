@@ -18,4 +18,9 @@ public class UseCaseHandlerFactory : IUseCaseHandlerFactory
     {
         return _serviceProvider.GetRequiredService<IUseCaseHandler<TRequest, TResponse>>();
     }
+
+    public IUseCaseHandlerRes<TRequest> CreateHandler<TRequest>() where TRequest : IUseCaseRequest
+    {
+        return _serviceProvider.GetRequiredService<IUseCaseHandlerRes<TRequest>>();
+    }
 }

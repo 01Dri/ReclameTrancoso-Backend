@@ -32,14 +32,9 @@ public class LoginRequestValidation : AbstractValidator<LoginRequestDTO>
         RuleFor(x => x.Email)
             .EmailAddress().When(x => x.Cpf.IsNullOrEmpty()).WithMessage("Email deve ser válido.");
 
+
         RuleFor(x => x.Password)
-            .NotEmpty().WithMessage("Senha não pode ser vazia.")
-            .MinimumLength(6).WithMessage("Senha deve ter no mínimo 6 caracteres")
-            .Matches(@"[A-Z]").WithMessage("Senha deve conter pelo menos uma letra maiúscula");
-        
-        RuleFor(x => x.Password)
-            .NotEmpty().WithMessage("CPF não pode ser vazio.")
-            .MinimumLength(6).WithMessage("Senha deve ter no mínimo 6 caracteres")
-            .Matches(@"[A-Z]").WithMessage("Senha deve conter pelo menos uma letra maiúscula");
+            .NotEmpty().WithMessage("Senha não pode ser vazia")
+            .MinimumLength(2).WithMessage("Senha inválida");
     }
 }

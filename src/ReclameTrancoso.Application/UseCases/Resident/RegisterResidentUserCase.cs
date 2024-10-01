@@ -9,8 +9,6 @@ using ReclameTrancoso.Exceptions.Exceptions;
 
 namespace Application.UseCases.Resident
 {
-    
-    // Criar Os mappers, salvar resident no banco e inserir nas tabelas intermediarias
     public class RegisterResidentUserCase : IUseCaseHandler<ResidentRegisterRequestDTO, ResidentRegisterResponseDTO>
     {
         private readonly IValidator<ResidentRegisterRequestDTO> _validator;
@@ -62,7 +60,6 @@ namespace Application.UseCases.Resident
         private async Task SaveResidentAndUser(Domain.Models.Resident resident, User user)
         {
             await _residentRepository.SaveAsync(resident);
-            user.ResidentId = resident.Id;
             user.Password = await this._passwordEncoder.HashPasswordAsync(user.Password);
             await _userRepository.SaveAsync(user);
         }

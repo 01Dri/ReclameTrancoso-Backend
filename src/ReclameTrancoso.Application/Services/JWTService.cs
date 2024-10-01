@@ -27,9 +27,11 @@ public class JWTService : ITokenService<User, TokenResponseDTO>
         {
             Subject = new ClaimsIdentity(new Claim[]
             {
-                new Claim(ClaimTypes.Name, user.Cpf)
+                new Claim(ClaimTypes.Name, user.Cpf),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
+
             }),
-            Expires = DateTime.UtcNow.AddHours(2),
+            Expires = DateTime.UtcNow.AddDays(2),
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature),
@@ -39,6 +41,46 @@ public class JWTService : ITokenService<User, TokenResponseDTO>
         var accessToken  = tokenHandler.WriteToken(token);
         var refreshToken = Guid.NewGuid().ToString();
         var refreshTokenExpires = DateTime.UtcNow.AddDays(7);
-        return new TokenResponseDTO(accessToken, refreshToken, tokenDescriptor.Expires, refreshTokenExpires);
+        return new TokenResponseDTO(accessToken, refreshToken, tokenDescriptor.Expires, refreshTokenExpires, null);
+    }
+
+    public bool ValidateToken(string token)
+    {
+        var secret = _configuration["Jwt:Key"];
+        var key = Encoding.ASCII.GetBytes(secret);
+
+        TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidIssuer = _configuration["Jwt:Issuer"],
+            ValidAudience = _configuration["Jwt:Audience"],
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero 
+        };
+        
+        try
+        {
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            ClaimsPrincipal principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken validatedToken);
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            return jwtToken.ValidTo > DateTime.UtcNow;
+        }
+        catch (SecurityTokenExpiredException)
+        {
+            return false;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    public EntityIdResponseDTO GetEntityIdByToken(string token)
+    {
+        
+        throw new NotImplementedException();
     }
 }

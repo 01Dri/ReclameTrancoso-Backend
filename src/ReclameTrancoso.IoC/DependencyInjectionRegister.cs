@@ -2,15 +2,22 @@
 using Application.Services;
 using Application.UseCases.Auth;
 using Application.UseCases.Building;
+using Application.UseCases.Complaint;
+using Application.UseCases.Manager;
 using Application.UseCases.Resident;
 using Application.Validations.Auth;
+using Application.Validations.Complaint;
+using Application.Validations.Manager;
 using Application.Validations.Resident;
 using Domain.Interfaces;
 using Domain.Models;
 using Domain.Models.DTOs;
 using Domain.Models.DTOs.Auth;
 using Domain.Models.DTOs.Building;
+using Domain.Models.DTOs.Complaint;
+using Domain.Models.DTOs.Manager;
 using Domain.Models.DTOs.Resident;
+using Domain.Models.Pagination;
 using FluentValidation;
 using Infrastructure.Data.Repositories;
 using Infrastructure.Data.UnitOfWork;
@@ -25,8 +32,11 @@ namespace ReclameTrancoso.IoC;
 
 public static class DependencyInjectionRegister
 {
-    
-    public static IServiceCollection ConfigureService(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection ConfigureService
+    (
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
         services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
         services.AddScoped<IApartmentRepository, ApartmentRepository>();
@@ -36,10 +46,16 @@ public static class DependencyInjectionRegister
         services.AddScoped<IApartmentsResidentsRepository, ApartmentsResidentsRepository>();
         services.AddScoped<IBuildingResidentsRepository, BuildingsResidentsRepository>();
         services.AddScoped<ITokenRepository, TokenRepository>();
+        services.AddScoped<IComplaintRepository, ComplaintRepository>();
+        services.AddScoped<IResidentComplaintRepository, ResidentComplaintRepository>();
+        
+        services.AddScoped<ICommentRepository, CommentRepository>();
+        services.AddScoped<IManagerComplaintCommentsRepository, ManagerComplaintCommentsRepository>();
+        services.AddScoped<IManagerRepository, ManagerRepository>();
+        
         services.AddScoped<IPasswordEncoder, BCryptPasswordEncoder>();
         services.AddScoped<IUnitOfWork, UnitOfWorkEF>();
         services.AddScoped<ITokenService<User, TokenResponseDTO>, JWTService>();
-        
 
         return services;
     }
@@ -51,10 +67,43 @@ public static class DependencyInjectionRegister
             RegisterResidentUserCase>();
         
         services.AddScoped<IUseCaseHandler<GetRequest, BuildingResponseDTO>,
-            BuildingUseCase>();
+            GetBuildingsUseCase>();
         
         services.AddScoped<IUseCaseHandler<LoginRequestDTO, TokenResponseDTO>,
             LoginUseCase>();
+        
+        services.AddScoped<IUseCaseHandler<RefreshTokenRequestDTO, TokenResponseDTO>,
+            RefreshTokenUseCase>();
+        
+        services.AddScoped<IUseCaseHandler<GetByIdRequest, ResidentResponseDTO>,
+            GetResidentByIdUseCase>();
+        
+        services.AddScoped<IUseCaseHandler<ComplaintCreateRequestDTO, CreatedResponse>,
+            ComplaintCreateUseCase>();
+        
+        services.AddScoped<IUseCaseHandler<GetRequestPaginatedById, PagedResponseDto<ComplaintDto>>,
+            ComplaintsGetByResidentIdUseCase>();
+        
+        services.AddScoped<IUseCaseHandler<
+            ManagerAddCommentRequestDTO, 
+            ManagerAddCommentResponseDTO>,
+            ManagerAddCommentUseCase>();
+           
+        services.AddScoped<IUseCaseHandler<ComplaintUpdateRequestDTO, ComplaintDto>,
+            ComplaintUpdateUseCase>();
+        
+        services.AddScoped<IUseCaseHandler<GetRequestPaginated, PagedResponseDto<ComplaintDto>>,
+            ComplaintGetUseCase>();
+
+        
+        return services;
+    }
+
+    public static IServiceCollection ConfigureUseCasesHandlersRes(this IServiceCollection services)
+    {
+        services.AddScoped<IUseCaseHandlerRes<DeleteRequest>,
+            ComplaintDeleteByIdUseCase>();
+        
         return services;
     }
 
@@ -63,6 +112,11 @@ public static class DependencyInjectionRegister
     {
         services.AddScoped<IValidator<ResidentRegisterRequestDTO>, RegisterResidentRequestValidation>();
         services.AddScoped<IValidator<LoginRequestDTO>, LoginRequestValidation>();
+        services.AddScoped<IValidator<RefreshTokenRequestDTO>, RefreshTokenValidation>();
+        services.AddScoped<IValidator<ComplaintCreateRequestDTO>, CreateComplaintValidator>();
+        services.AddScoped<IValidator<ManagerAddCommentRequestDTO>, ManagerAddCommentValidator>();
+        services.AddScoped<IValidator<ComplaintUpdateRequestDTO>, ComplaintUpdateValidator>();
+
 
         return services;
     }

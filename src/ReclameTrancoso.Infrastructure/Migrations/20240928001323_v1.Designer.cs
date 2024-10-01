@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240908151953_v3")]
-    partial class v3
+    [Migration("20240928001323_v1")]
+    partial class v1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -108,6 +108,80 @@ namespace Infrastructure.Migrations
                     b.ToTable("BuildingResidents");
                 });
 
+            modelBuilder.Entity("Domain.Models.Complaint", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("AdditionalInformation1")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AdditionalInformation2")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AdditionalInformation3")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ComplaintType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsAnonymous")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("ResidentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResidentId");
+
+                    b.ToTable("Complaints");
+                });
+
+            modelBuilder.Entity("Domain.Models.DTOs.Union.Manager", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Cpf")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Managers");
+                });
+
             modelBuilder.Entity("Domain.Models.Resident", b =>
                 {
                     b.Property<long>("Id")
@@ -133,7 +207,32 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Residents");
+                });
+
+            modelBuilder.Entity("Domain.Models.ResidentComplaint", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("ComplaintId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ResidentId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ComplaintId");
+
+                    b.HasIndex("ResidentId");
+
+                    b.ToTable("ResidentComplaints");
                 });
 
             modelBuilder.Entity("Domain.Models.TokenEntity", b =>
@@ -181,19 +280,65 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long?>("ResidentId")
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("ReclameTrancoso.Domain.Models.Comment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Text")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("ReclameTrancoso.Domain.Models.ManagerComplaintComments", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("CommentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ComplaintId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ManagerId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ResidentId")
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("ComplaintId")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.HasIndex("ManagerId");
+
+                    b.ToTable("ManagerComplaintComments");
                 });
 
             modelBuilder.Entity("Domain.Models.Apartment", b =>
@@ -245,6 +390,48 @@ namespace Infrastructure.Migrations
                     b.Navigation("Resident");
                 });
 
+            modelBuilder.Entity("Domain.Models.Complaint", b =>
+                {
+                    b.HasOne("Domain.Models.Resident", "Resident")
+                        .WithMany()
+                        .HasForeignKey("ResidentId");
+
+                    b.Navigation("Resident");
+                });
+
+            modelBuilder.Entity("Domain.Models.DTOs.Union.Manager", b =>
+                {
+                    b.HasOne("Domain.Models.User", "User")
+                        .WithOne()
+                        .HasForeignKey("Domain.Models.DTOs.Union.Manager", "UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Models.Resident", b =>
+                {
+                    b.HasOne("Domain.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Models.ResidentComplaint", b =>
+                {
+                    b.HasOne("Domain.Models.Complaint", "Complaint")
+                        .WithMany()
+                        .HasForeignKey("ComplaintId");
+
+                    b.HasOne("Domain.Models.Resident", "Resident")
+                        .WithMany("Complaints")
+                        .HasForeignKey("ResidentId");
+
+                    b.Navigation("Complaint");
+
+                    b.Navigation("Resident");
+                });
+
             modelBuilder.Entity("Domain.Models.TokenEntity", b =>
                 {
                     b.HasOne("Domain.Models.User", "User")
@@ -255,14 +442,25 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Models.User", b =>
+            modelBuilder.Entity("ReclameTrancoso.Domain.Models.ManagerComplaintComments", b =>
                 {
-                    b.HasOne("Domain.Models.Resident", "Resident")
-                        .WithOne("User")
-                        .HasForeignKey("Domain.Models.User", "ResidentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("ReclameTrancoso.Domain.Models.Comment", "Comment")
+                        .WithMany()
+                        .HasForeignKey("CommentId");
 
-                    b.Navigation("Resident");
+                    b.HasOne("Domain.Models.Complaint", "Complaint")
+                        .WithOne("Comment")
+                        .HasForeignKey("ReclameTrancoso.Domain.Models.ManagerComplaintComments", "ComplaintId");
+
+                    b.HasOne("Domain.Models.DTOs.Union.Manager", "Manager")
+                        .WithMany("Comments")
+                        .HasForeignKey("ManagerId");
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("Complaint");
+
+                    b.Navigation("Manager");
                 });
 
             modelBuilder.Entity("Domain.Models.Apartment", b =>
@@ -277,13 +475,23 @@ namespace Infrastructure.Migrations
                     b.Navigation("BuildingResidents");
                 });
 
+            modelBuilder.Entity("Domain.Models.Complaint", b =>
+                {
+                    b.Navigation("Comment");
+                });
+
+            modelBuilder.Entity("Domain.Models.DTOs.Union.Manager", b =>
+                {
+                    b.Navigation("Comments");
+                });
+
             modelBuilder.Entity("Domain.Models.Resident", b =>
                 {
                     b.Navigation("ApartmentResidents");
 
                     b.Navigation("BuildingResidents");
 
-                    b.Navigation("User");
+                    b.Navigation("Complaints");
                 });
 
             modelBuilder.Entity("Domain.Models.User", b =>

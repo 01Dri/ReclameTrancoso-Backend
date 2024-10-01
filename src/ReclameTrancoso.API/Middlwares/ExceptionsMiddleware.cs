@@ -33,6 +33,8 @@ public class ExceptionsMiddleware
         {
             { typeof(NotFoundException), StatusCodes.Status404NotFound },
             { typeof(InvalidPasswordException), StatusCodes.Status400BadRequest },
+            { typeof(FailedToRefreshTokenException), StatusCodes.Status401Unauthorized },
+
         };
         
         if (exception is ValidationException)
