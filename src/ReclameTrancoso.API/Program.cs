@@ -16,6 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+Console.WriteLine("ENVIROMENT: " + env);
 builder.Configuration.AddJsonFile($"appsettings.{env}.json", false, true).Build();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
