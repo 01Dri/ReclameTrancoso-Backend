@@ -17,7 +17,8 @@ public static class ComplaintMapper
             AdditionalInformation2 = dto.AdditionalInformation2,
             AdditionalInformation3 = dto.AdditionalInformation3,
             IsAnonymous = dto.IsAnonymous,
-            Status = dto.Status
+            Status = dto.Status,
+            ResidentId = dto.ResidentId
         };
     }
     

@@ -30,6 +30,6 @@ public class ComplaintGetUseCase : IUseCaseHandler<GetRequestPaginated, PagedRes
             };
         }
 
-        return await _residentComplaintRepository.GetComplaintsAsync(request);
+        return result;
     }
 }
